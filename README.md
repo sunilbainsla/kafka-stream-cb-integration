@@ -1,1 +1,1 @@
-# kafka-stream-cb-retry-integration
+# kafka-stream-cb-integration
