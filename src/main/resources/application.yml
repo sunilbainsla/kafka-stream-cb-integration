@@ -6,31 +6,38 @@ logging.level:
   com.sunilbainsla: DEBUG
 
 spring.cloud.stream.bindings:
+  topicProducer-out-0:
+    destination: topic1
+  topic2Producer-out-0:
+    destination: topic2
+  topic3Producer-out-0:
+    destination: topic3
   topicConsumer-in-0:
     destination: topic1
     group: topic-consumer-group-1
-  topicProducer-out-0:
-    destination: topic1
   topic2Consumer-in-0:
     destination: topic2
     group: topic2-consumer-group-1
-  topic2Producer-out-0:
-    destination: topic2
   topic3Consumer-in-0:
     destination: topic3
     group: topic3-consumer-group-1
-  topic3Producer-out-0:
-    destination: topic3
-
+  topic4Consumer-in-0:
+    destination: topic4
+    group: topic4-consumer-group-1
+  topic5Consumer-in-0:
+    destination: topic5
+    group: topic5-consumer-group-1
 spring.cloud.stream:
 #  function.definition: topicConsumer;topic2Consumer;topicProducer
-  function.definition: topicConsumer;topic2Consumer;topic3Consumer
+  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer
 #  function.definition: topic2Consumer
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
       topic2Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic2Consumer
       topic3Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic3Consumer
+      topic4Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic4Consumer
+      topic5Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic5Consumer
     binder:
       configuration:
         commit.interval.ms: 1000
@@ -45,7 +52,10 @@ circuitbreaker.instances:
     - topic2Consumer-in-0
   cb-instance-topic3:
     - topic3Consumer-in-0
-
+  cb-instance-topic4:
+    - topic4Consumer-in-0
+  cb-instance-topic5:
+    - topic5Consumer-in-0
 resilience4j.circuitbreaker:
   circuit-breaker-aspect-order: 1
   configs:
@@ -68,7 +78,10 @@ resilience4j.circuitbreaker:
       base-config: default
     cb-instance-topic3:
       base-config: default
-
+    cb-instance-topic4:
+      base-config: default
+    cb-instance-topic5:
+      base-config: default
 resilience4j.retry:
   retry-aspect-order: 2
   configs:
@@ -78,6 +91,12 @@ resilience4j.retry:
         - org.springframework.web.client.RestClientException
     custom:
       maxAttempts: 4
+      maxInterval: 50000L
+      retry-exceptions:
+        - org.springframework.web.client.RestClientException
+    custom2:
+      maxAttempts: 20
+      maxInterval: 50000L
       retry-exceptions:
         - org.springframework.web.client.RestClientException
   instances:
@@ -87,3 +106,24 @@ resilience4j.retry:
       base-config: default
     retry-instance-topic3:
       base-config: custom
+    retry-instance-topic4:
+      base-config: custom2
+    retry-instance-topic5:
+      base-config: default
+
+resilience4j.ratelimiter:
+  rateLimiterAspectOrder: 3
+  instances:
+    rate-instance:
+      limitForPeriod: 8
+      limitRefreshPeriod: 1s
+      timeoutDuration: 3
+      registerHealthIndicator: false
+resilience4j.timelimiter:
+  configs:
+    default:
+      cancelRunningFuture: false
+      timeoutDuration: 2s
+  instances:
+    time-instance:
+      baseConfig: default

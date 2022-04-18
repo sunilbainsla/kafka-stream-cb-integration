@@ -34,17 +34,17 @@ public class TopicConsumerService {
     }
 
     private void businessLogic(Object key, Sensor val) {
-        log.debug("topicConsumer: {}", val);
+        log.debug("Consumer 1 start : {}", val);
         customRetryTemplate().execute(
                 retryContext -> {
-                    log.debug("inside spring retry: {}", retryContext.getRetryCount());
+                    log.debug("Consumer 1 with retries: {}", retryContext.getRetryCount());
                     pocRestClient.restClient(val.getId());
                     return null;
                 },
                 recoveryContext -> {
-                    log.debug("inside spring retry recovery");
+                    log.debug("fallback  recovery logic after some retries");
                     return null;
                 });
-        log.debug("topicConsumer end...");
+        log.debug("Consumer  1 end...");
     }
 }
