@@ -55,19 +55,30 @@ public class PocRestClient {
     }
 
     // With certain retry and circuit breaker
-  //  @CircuitBreaker(name = CB_INSTANCE4)
+    @CircuitBreaker(name = CB_INSTANCE4)
    // @Retry(name = RETRY_INSTANCE4)
+    // fallback will see if there is any error from rest client it will go to fallback and kafka will start to read the next steps
+    // if fallback present it will also check if the rate limiter wont allow it be come to fallback and next offset will start
+    //Sunil: I wont recomended it along with rate instance. timeoutDuration config wont work along with fallback as fallback will consume the offset
+
+   // if timeoutDuration alone used it will generate exception if limit crossed and stop the consumer.
+    // So it should not used just use other 2 properties and it would control the flow.
+    //even with  fallback  circuit breaker wont work
+    // if timeoutDuration will not set default will be 5s and in case  limitRefreshtime is >5 rate limiter generate exception. So better to use more than 5 s in timeout or
+    // if u dont want to timeout put timeoutDuration: -1
+    // @RateLimiter(name = RATE_INSTANCE )
     @RateLimiter(name = RATE_INSTANCE)
     public void restClient4(String message) {
         internalRestClient(message);
     }
     // With certain retry and circuit breaker
     @CircuitBreaker(name = CB_INSTANCE5)
-    @Retry(name = RETRY_INSTANCE5)
-   // @TimeLimiter(name = TIME_INSTANCE ,fallbackMethod = "defaultConfirmPayment")
+    //@Retry(name = RETRY_INSTANCE5)
+    //@TimeLimiter(name = TIME_INSTANCE,fallbackMethod ="defaultConfirmPayment" )
     public void restClient5(String message) {
-        internalRestClient(message);
+         internalRestClient(message);
     }
+
     public void internalRestClient(String message) {
         log.debug("rest call...");
         log.debug(" Making a request to {} at :{}", SERVICE_URL + message, LocalDateTime.now());
@@ -75,9 +86,11 @@ public class PocRestClient {
         restTemplate.getForObject(SERVICE_URL, String.class);
     }
     @SuppressWarnings("unused")
-    private void defaultConfirmPayment () {
-        log.info("default " +LocalDateTime.now());
+    private void defaultConfirmPayment (String message,Throwable t) {
+        log.info("default --------------------------------message " +LocalDateTime.now());
 
 
     }
+
+
 }

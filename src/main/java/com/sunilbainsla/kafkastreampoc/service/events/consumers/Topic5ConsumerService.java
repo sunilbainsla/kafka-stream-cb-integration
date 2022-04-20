@@ -25,7 +25,8 @@ public class Topic5ConsumerService {
 
     private void businessLogic(Object key, Topic3Message val) {
         log.debug("topic5Consumer start: {}", val);
-        pocRestClient.restClient5(val.getMessage());
         log.debug("topic5Consumer end...");
+         pocRestClient.restClient5(val.getMessage());
+
     }
 }

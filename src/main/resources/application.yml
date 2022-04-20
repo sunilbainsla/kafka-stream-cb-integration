@@ -71,6 +71,18 @@ resilience4j.circuitbreaker:
       failure-rate-threshold: 60
       record-exceptions:
         - org.springframework.web.client.RestClientException
+    custom:
+      wait-duration-in-open-state: 60s
+      permitted-number-of-calls-in-half-open-state: 1
+      automatic-transition-from-open-to-half-open-enabled: true
+      sliding-window-type: count-based
+      sliding-window-size: 1
+      minimum-number-of-calls: 1
+      slow-call-duration-threshold: 10s
+      slow-call-rate-threshold: 60
+      failure-rate-threshold: 60
+      record-exceptions:
+        - java.io.IOException
   instances:
     cb-instance-topic:
       base-config: default
@@ -79,7 +91,7 @@ resilience4j.circuitbreaker:
     cb-instance-topic3:
       base-config: default
     cb-instance-topic4:
-      base-config: default
+      base-config: custom
     cb-instance-topic5:
       base-config: default
 resilience4j.retry:
@@ -98,7 +110,7 @@ resilience4j.retry:
       maxAttempts: 20
       maxInterval: 50000L
       retry-exceptions:
-        - org.springframework.web.client.RestClientException
+        - io.github.resilience4j.ratelimiter.RequestNotPermitted
   instances:
     retry-instance-topic:
       base-config: default
@@ -117,13 +129,13 @@ resilience4j.ratelimiter:
     rate-instance:
       limitForPeriod: 3
       limitRefreshPeriod: 1s
-     # timeoutDuration: 3
+      #timeoutDuration: -1
       #registerHealthIndicator: false
 resilience4j.timelimiter:
   configs:
     default:
       cancelRunningFuture: false
-      timeoutDuration: 2s
+      #timeoutDuration: 2s
   instances:
     time-instance:
       baseConfig: default
