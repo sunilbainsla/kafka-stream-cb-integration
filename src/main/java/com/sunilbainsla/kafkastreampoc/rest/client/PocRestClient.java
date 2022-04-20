@@ -56,7 +56,7 @@ public class PocRestClient {
 
     // With certain retry and circuit breaker
   //  @CircuitBreaker(name = CB_INSTANCE4)
-    @Retry(name = RETRY_INSTANCE4)
+   // @Retry(name = RETRY_INSTANCE4)
     @RateLimiter(name = RATE_INSTANCE)
     public void restClient4(String message) {
         internalRestClient(message);
@@ -64,7 +64,7 @@ public class PocRestClient {
     // With certain retry and circuit breaker
     @CircuitBreaker(name = CB_INSTANCE5)
     @Retry(name = RETRY_INSTANCE5)
-    @TimeLimiter(name = TIME_INSTANCE ,fallbackMethod = "defaultConfirmPayment")
+   // @TimeLimiter(name = TIME_INSTANCE ,fallbackMethod = "defaultConfirmPayment")
     public void restClient5(String message) {
         internalRestClient(message);
     }
@@ -76,7 +76,7 @@ public class PocRestClient {
     }
     @SuppressWarnings("unused")
     private void defaultConfirmPayment () {
-        log.info("reverse transaction failed for merchant txn id: {}");
+        log.info("default " +LocalDateTime.now());
 
 
     }
