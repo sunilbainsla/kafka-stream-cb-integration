@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Slf4j
 public class Topic6ConsumerService {
-
+// infinite retry without rebalancing
     private final PocRestClient pocRestClient;
     private final RetryTemplate retryInstanceTopic6;
 

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class Topic2ConsumerService {
+public class SimpleRetryConsumerService2 {
 
   private final PocRestClient pocRestClient;
 
-  public Topic2ConsumerService(PocRestClient pocRestClient) {
+  public SimpleRetryConsumerService2(PocRestClient pocRestClient) {
     this.pocRestClient = pocRestClient;
   }
 

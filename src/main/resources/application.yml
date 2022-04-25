@@ -141,7 +141,7 @@ resilience4j.ratelimiter:
     rate-instance:
       limitForPeriod: 3
       limitRefreshPeriod: 1s
-      #timeoutDuration: -1
+      #timeoutDuration: 2
       #registerHealthIndicator: false
 resilience4j.timelimiter:
   configs:

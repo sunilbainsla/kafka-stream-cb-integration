@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+/**
+ * Retries with jitter
+ */
 public class Topic3ConsumerService {
 
   private final PocRestClient pocRestClient;

@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 @Slf4j
 public class Topic7ConsumerService {
-
+    // 10 retry without rebalancing and fallback
     private final PocRestClient pocRestClient;
 
     @Bean
