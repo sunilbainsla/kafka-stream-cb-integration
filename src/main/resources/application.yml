@@ -45,10 +45,12 @@ spring.cloud.stream:
       topic3Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic3Consumer
       topic4Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic4Consumer
       topic5Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic5Consumer
+      topic6Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic6Consumer
     binder:
       configuration:
         commit.interval.ms: 1000
         processing.guarantee: exactly_once_v2
+        max.poll.interval.ms: 2147483647 # 300000
       deserializationExceptionHandler: logAndContinue
 
 circuitbreaker.instances:
