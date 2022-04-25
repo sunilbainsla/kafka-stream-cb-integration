@@ -5,12 +5,7 @@ import com.sunilbainsla.kafkastreampoc.service.events.suppliers.StreamBridgeProd
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,21 +14,19 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class TopicRestController {
 
-  private final StreamBridgeProducersService streamBridgeProducersService;
+    private final StreamBridgeProducersService streamBridgeProducersService;
 
-  @PostMapping("/{id}")
-  @ResponseStatus(HttpStatus.CREATED)
-  public Mono<String> postTopicMessage(
-    @PathVariable(name = "id") String id,
-    @RequestBody(required = false) TopicRequest request
-  ) {
-    if (id.equals("1")) {
-      log.debug("postTopic");
-      streamBridgeProducersService.topicPublisher();
-    } else {
-      log.debug("postTopic{}", id);
-      streamBridgeProducersService.topicPublisher(id, request);
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<String> postTopicMessage(@PathVariable(name = "id") String id,
+                                         @RequestBody(required = false) TopicRequest request) {
+        if (id.equals("1")) {
+            log.debug("postTopic");
+            streamBridgeProducersService.topicPublisher();
+        } else {
+            log.debug("postTopic{}", id);
+            streamBridgeProducersService.topicPublisher(id, request);
+        }
+        return Mono.just("ok");
     }
-    return Mono.just("ok");
-  }
 }

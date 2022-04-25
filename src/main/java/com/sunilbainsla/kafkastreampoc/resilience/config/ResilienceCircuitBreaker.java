@@ -3,20 +3,20 @@ package com.sunilbainsla.kafkastreampoc.resilience.config;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClientException;
 
+import java.time.Duration;
+
 @Configuration
 @AllArgsConstructor
 @Slf4j
 public class ResilienceCircuitBreaker {
 
-  public static final String CIRCUIT_BREAKER_INSTANCE_TOPIC_6 =
-    "circuit-breaker-instance-topic6";
+  public static final String CIRCUIT_BREAKER_INSTANCE_TOPIC_6 = "circuit-breaker-instance-topic6";
 
   private final CircuitBreakerRegistry circuitBreakerRegistry;
 
