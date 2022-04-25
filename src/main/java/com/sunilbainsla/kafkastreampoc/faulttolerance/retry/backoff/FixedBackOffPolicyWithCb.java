@@ -1,7 +1,10 @@
 package com.sunilbainsla.kafkastreampoc.faulttolerance.retry.backoff;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import org.springframework.retry.backoff.*;
+import org.springframework.retry.backoff.BackOffInterruptedException;
+import org.springframework.retry.backoff.Sleeper;
+import org.springframework.retry.backoff.StatelessBackOffPolicy;
+import org.springframework.retry.backoff.ThreadWaitSleeper;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -32,7 +35,7 @@ public class FixedBackOffPolicyWithCb extends StatelessBackOffPolicy {
 
     protected void doBackOff() throws BackOffInterruptedException {
         try {
-            long cbWaitDuration = Optional.ofNullable(circuitBreaker)
+            long cbWaitDuration = Optional.of(circuitBreaker)
                     .filter(cb -> !cb.tryAcquirePermission())
                     .map(cb -> cb.getCircuitBreakerConfig()
                             .getWaitIntervalFunctionInOpenState().apply(1) + 1000L)
