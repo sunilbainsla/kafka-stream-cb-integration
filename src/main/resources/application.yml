@@ -35,7 +35,7 @@ spring.cloud.stream.bindings:
     destination: topic6
   topic6Consumer-in-0:
     destination: topic6
-    group: topic5-consumer-group-1
+    group: topic6-consumer-group-1
 spring.cloud.stream:
   function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;
   kafka.streams:
