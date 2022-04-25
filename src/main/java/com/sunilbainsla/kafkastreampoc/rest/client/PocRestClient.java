@@ -9,8 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 
-import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.CIRCUIT_BREAKER_INSTANCE_TOPIC_6;
-import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.CIRCUIT_BREAKER_INSTANCE_TOPIC_7;
+import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.*;
 import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.RetryInstances.RETRY_INSTANCE_TOPIC_7;
 
 @Service
@@ -89,6 +88,10 @@ public class PocRestClient {
         internalRestClient(message);
     }
 
+    @CircuitBreaker(name = CIRCUIT_BREAKER_INSTANCE_TOPIC_8)
+    public void restClient8(String message) {
+        internalRestClient(message);
+    }
 
     public void internalRestClient(String message) {
         log.debug("rest call...");

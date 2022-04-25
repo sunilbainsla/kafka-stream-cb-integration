@@ -27,8 +27,11 @@ spring.cloud.stream.bindings:
   topic7Consumer-in-0:
     destination: topic7
     group: topic7-consumer-group-1
+  topic8Consumer-in-0:
+    destination: topic8
+    group: topic8-consumer-group-1
 spring.cloud.stream:
-  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer
+  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer

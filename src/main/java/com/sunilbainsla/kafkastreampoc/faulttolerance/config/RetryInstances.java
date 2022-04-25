@@ -11,11 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamRetryTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.backoff.BackOffContext;
-import org.springframework.retry.backoff.BackOffInterruptedException;
-import org.springframework.retry.backoff.BackOffPolicy;
-import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestClientException;
 
@@ -31,6 +26,7 @@ public class RetryInstances {
     private final RetryRegistry retryRegistry;
     private final CircuitBreaker circuitBreakerInstanceTopic6;
     private final CircuitBreaker circuitBreakerInstanceTopic7;
+    private final CircuitBreaker circuitBreakerInstanceTopic8;
 
     public RetryConfig defaultRetryConfig(CircuitBreaker circuitBreaker) {
         return RetryConfig
@@ -59,14 +55,24 @@ public class RetryInstances {
     public RetryTemplate retryInstanceTopic6() {
         return RetryTemplate.builder()
                 .infiniteRetry()
-                .customBackoff(new FixedBackOffPolicyWithCb(Duration.ofSeconds(1), circuitBreakerInstanceTopic6))
+                .customBackoff(new FixedBackOffPolicyWithCb(Duration.ofSeconds(1),
+                        circuitBreakerInstanceTopic6))
                 .build();
     }
-
 
     @Bean
     public Retry retryInstanceTopic7() {
         RetryConfig retryConfig = defaultRetryConfig(circuitBreakerInstanceTopic7);
         return retryRegistry.retry(RETRY_INSTANCE_TOPIC_7, retryConfig);
+    }
+
+    @Bean
+    @StreamRetryTemplate
+    public RetryTemplate retryInstanceTopic8() {
+        return RetryTemplate.builder()
+                .withinMillis(Duration.ofMinutes(2).toMillis())
+                .customBackoff(new FixedBackOffPolicyWithCb(Duration.ofSeconds(1),
+                        circuitBreakerInstanceTopic8))
+                .build();
     }
 }
