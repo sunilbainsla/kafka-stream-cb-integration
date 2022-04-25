@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RateLimiterConsumerService1 {
+public class RateLimiterConsumerService4 {
 
   private final PocRestClient pocRestClient;
 
-  public RateLimiterConsumerService1(PocRestClient pocRestClient) {
+  public RateLimiterConsumerService4(PocRestClient pocRestClient) {
     this.pocRestClient = pocRestClient;
   }
 
