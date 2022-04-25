@@ -3,14 +3,21 @@ package com.sunilbainsla.kafkastreampoc.faulttolerance.retry.backoff;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.springframework.retry.backoff.*;
 
+import java.time.Duration;
 import java.util.Optional;
 
 public class FixedBackOffPolicyWithCb extends StatelessBackOffPolicy {
     private final CircuitBreaker circuitBreaker;
     private volatile long backOffPeriod = 1000L;
-    private Sleeper sleeper;
+    private final Sleeper sleeper;
 
     public FixedBackOffPolicyWithCb(CircuitBreaker circuitBreaker) {
+        this.circuitBreaker = circuitBreaker;
+        this.sleeper = new ThreadWaitSleeper();
+    }
+
+    public FixedBackOffPolicyWithCb(Duration backOffPeriod, CircuitBreaker circuitBreaker) {
+        this.backOffPeriod = backOffPeriod.toMillis();
         this.circuitBreaker = circuitBreaker;
         this.sleeper = new ThreadWaitSleeper();
     }

@@ -57,12 +57,9 @@ public class RetryInstances {
     @Bean
     @StreamRetryTemplate
     public RetryTemplate retryInstanceTopic6() {
-        FixedBackOffPolicyWithCb backOffPolicy = new FixedBackOffPolicyWithCb(circuitBreakerInstanceTopic6);
-        backOffPolicy.setBackOffPeriod(Duration.ofSeconds(1).toMillis());
-
         return RetryTemplate.builder()
                 .infiniteRetry()
-                .customBackoff(backOffPolicy)
+                .customBackoff(new FixedBackOffPolicyWithCb(Duration.ofSeconds(1), circuitBreakerInstanceTopic6))
                 .build();
     }
 
