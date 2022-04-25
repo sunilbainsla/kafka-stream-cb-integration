@@ -3,11 +3,12 @@ package com.sunilbainsla.kafkastreampoc.service.events.suppliers;
 import com.sunilbainsla.kafkastreampoc.model.kafka.Sensor;
 import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
 import com.sunilbainsla.kafkastreampoc.model.request.TopicRequest;
-import java.util.Random;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -27,17 +28,16 @@ public class StreamBridgeProducersService {
     sensor.setAcceleration(random.nextFloat() * 10);
     sensor.setVelocity(random.nextFloat() * 100);
     sensor.setTemperature(random.nextFloat() * 50);
-    log.debug("topicPublisher: {}", sensor);
-    streamBridge.send("topicProducer-out-0", sensor);
+    log.debug("Producer topic1: {}", sensor);
+    streamBridge.send("topic1", sensor);
   }
 
   public void topicPublisher(String id, TopicRequest topicRequest) {
     TopicMessage topicMessage = new TopicMessage();
     topicMessage.setId(UUID.randomUUID() + "-v1");
     topicMessage.setMessage(topicRequest.getMessage());
-    String publisher = String.format("topic%sProducer", id);
-    String publisherBinding = String.format("%s-out-0", publisher);
-    log.debug("{}: {}", publisher, topicMessage);
-    streamBridge.send(publisherBinding, topicMessage);
+    String publisherTopic = "topic" + id;
+    log.debug("Producer {}: {}", publisherTopic, topicMessage);
+    streamBridge.send(publisherTopic, topicMessage);
   }
 }

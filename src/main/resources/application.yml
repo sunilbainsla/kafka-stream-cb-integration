@@ -6,36 +6,26 @@ logging.level:
   com.sunilbainsla: DEBUG
 
 spring.cloud.stream.bindings:
-  topicProducer-out-0:
-    destination: topic1
   topicConsumer-in-0:
     destination: topic1
     group: topic-consumer-group-1
-  topic2Producer-out-0:
-    destination: topic2
   topic2Consumer-in-0:
     destination: topic2
     group: topic2-consumer-group-1
-  topic3Producer-out-0:
-    destination: topic3
   topic3Consumer-in-0:
     destination: topic3
     group: topic3-consumer-group-1
-  topic4Producer-out-0:
-    destination: topic4
   topic4Consumer-in-0:
     destination: topic4
     group: topic4-consumer-group-1
-  topic5Producer-out-0:
-    destination: topic5
   topic5Consumer-in-0:
     destination: topic5
     group: topic5-consumer-group-1
-  topic6Producer-out-0:
-    destination: topic6
   topic6Consumer-in-0:
     destination: topic6
     group: topic5-consumer-group-1
+
+
 spring.cloud.stream:
   function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;
   kafka.streams:
@@ -53,7 +43,7 @@ spring.cloud.stream:
         max.poll.interval.ms: 2147483647 # 300000
       deserializationExceptionHandler: logAndContinue
 
-circuitbreaker.instances:
+circuit-breaker.instances:
   cb-instance-topic:
     - topicConsumer-in-0
   cb-instance-topic2:
@@ -64,6 +54,10 @@ circuitbreaker.instances:
     - topic4Consumer-in-0
   cb-instance-topic5:
     - topic5Consumer-in-0
+
+retry.instances:
+  retry-instance-topic7:
+    - cb-instance-topic7
 
 resilience4j.circuitbreaker:
   configs:
@@ -84,8 +78,8 @@ resilience4j.circuitbreaker:
       permitted-number-of-calls-in-half-open-state: 1
       automatic-transition-from-open-to-half-open-enabled: true
       sliding-window-type: count-based
-      sliding-window-size: 1
-      minimum-number-of-calls: 1
+      sliding-window-size: 10
+      minimum-number-of-calls: 3
       slow-call-duration-threshold: 10s
       slow-call-rate-threshold: 60
       failure-rate-threshold: 60

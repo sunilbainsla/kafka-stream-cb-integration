@@ -2,9 +2,10 @@ package com.sunilbainsla.kafkastreampoc.resilience.config;
 
 import io.github.resilience4j.common.retry.configuration.RetryConfigCustomizer;
 import io.github.resilience4j.core.IntervalFunction;
-import java.time.Duration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 @Configuration
 public class CircuitBreakerCustomizer {
