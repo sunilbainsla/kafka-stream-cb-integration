@@ -80,7 +80,6 @@ public class CircuitBreakerManager {
             public int getOrder() {
                 return Integer.MAX_VALUE;
             }
-
         };
     }
 }
