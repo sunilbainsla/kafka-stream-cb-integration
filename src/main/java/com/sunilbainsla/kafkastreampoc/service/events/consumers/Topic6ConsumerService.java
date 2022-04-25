@@ -10,22 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class Topic3ConsumerService {
+public class Topic6ConsumerService {
 
   private final PocRestClient pocRestClient;
 
-  public Topic3ConsumerService(PocRestClient pocRestClient) {
+  public Topic6ConsumerService(PocRestClient pocRestClient) {
     this.pocRestClient = pocRestClient;
   }
 
   @Bean
-  public Consumer<KStream<Object, TopicMessage>> topic3Consumer() {
+  public Consumer<KStream<Object, TopicMessage>> topic5Consumer() {
     return input -> input.foreach(this::businessLogic);
   }
 
   private void businessLogic(Object key, TopicMessage val) {
-    log.debug("topic3Consumer start: {}", val);
-    pocRestClient.restClient3(val.getMessage());
-    log.debug("topic3Consumer end...");
+    log.debug("topic5Consumer start: {}", val);
+    pocRestClient.restClient5(val.getMessage());
+    log.debug("topic5Consumer end...");
   }
 }

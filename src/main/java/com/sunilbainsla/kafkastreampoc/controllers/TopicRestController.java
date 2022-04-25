@@ -1,55 +1,39 @@
 package com.sunilbainsla.kafkastreampoc.controllers;
 
-import com.sunilbainsla.kafkastreampoc.model.request.Topic3Request;
-import com.sunilbainsla.kafkastreampoc.service.events.suppliers.TopicProducersService;
-import com.sunilbainsla.kafkastreampoc.model.request.Topic2Request;
-import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
+import com.sunilbainsla.kafkastreampoc.model.request.TopicRequest;
+import com.sunilbainsla.kafkastreampoc.service.events.suppliers.StreamBridgeProducersService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/")
 @Slf4j
+@AllArgsConstructor
 public class TopicRestController {
-    private final TopicProducersService topicProducersService;
-    private final PocRestClient pocRestClient;
 
-    public TopicRestController(TopicProducersService topicProducersService, PocRestClient pocRestClient) {
-        this.topicProducersService = topicProducersService;
-        this.pocRestClient = pocRestClient;
+  private final StreamBridgeProducersService streamBridgeProducersService;
+
+  @PostMapping("/{id}")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mono<String> postTopicMessage(
+    @PathVariable(name = "id") String id,
+    @RequestBody(required = false) TopicRequest request
+  ) {
+    if (id.equals("1")) {
+      log.debug("postTopic");
+      streamBridgeProducersService.topicPublisher();
+    } else {
+      log.debug("postTopic{}", id);
+      streamBridgeProducersService.topicPublisher(id, request);
     }
-
-    @PostMapping("/1")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<String> postTopic1Message() {
-        topicProducersService.topicPublisher();
-        return Mono.just("ok");
-    }
-
-    @PostMapping("/2")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<String> postTopic2Message(@RequestBody Topic2Request request) {
-        log.debug("postTopic2Message: {}", request);
-        topicProducersService.topic2Publisher(request);
-        return Mono.just("ok");
-    }
-
-    @PostMapping("/3")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<String> postTopic3Message(@RequestBody Topic3Request request) {
-        log.debug("postTopic3Message: {}", request);
-        topicProducersService.topic3Publisher(request);
-        return Mono.just("ok");
-    }
-
-
-    @GetMapping("/cb")
-    @ResponseStatus(HttpStatus.OK)
-    public void activateCb() {
-        log.debug("activateCb...");
-        pocRestClient.restClient("cb");
-        log.debug("endCb...");
-    }
+    return Mono.just("ok");
+  }
 }

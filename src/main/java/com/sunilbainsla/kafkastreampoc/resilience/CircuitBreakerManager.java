@@ -1,6 +1,5 @@
-package com.sunilbainsla.kafkastreampoc.circuitbreaker;
+package com.sunilbainsla.kafkastreampoc.resilience;
 
-import com.sunilbainsla.kafkastreampoc.circuitbreaker.config.CircuitBreakerConfiguration;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.event.CircuitBreakerOnStateTransitionEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,9 @@ import org.springframework.cloud.stream.binding.BindingsLifecycleController;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
+import com.sunilbainsla.kafkastreampoc.resilience.config.CircuitBreakerConfiguration;
+
 import java.util.Collections;
 import java.util.Optional;
 
