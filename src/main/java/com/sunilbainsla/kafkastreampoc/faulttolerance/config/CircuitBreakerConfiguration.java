@@ -1,4 +1,4 @@
-package com.sunilbainsla.kafkastreampoc.resilience.config;
+package com.sunilbainsla.kafkastreampoc.faulttolerance.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Data
 @Configuration
-@ConfigurationProperties("retry")
-public class RetryCircuitBreakerConfig {
+@ConfigurationProperties("circuit-breaker")
+public class CircuitBreakerConfiguration {
     private Map<String, List<String>> instances;
 }

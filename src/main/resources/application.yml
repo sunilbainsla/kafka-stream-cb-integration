@@ -24,8 +24,11 @@ spring.cloud.stream.bindings:
   topic6Consumer-in-0:
     destination: topic6
     group: topic6-consumer-group-1
+  topic7Consumer-in-0:
+    destination: topic7
+    group: topic7-consumer-group-1
 spring.cloud.stream:
-  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;
+  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
@@ -34,6 +37,7 @@ spring.cloud.stream:
       topic4Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic4Consumer
       topic5Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic5Consumer
       topic6Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic6Consumer
+      topic7Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic7Consumer
     binder:
       configuration:
         commit.interval.ms: 1000
@@ -52,10 +56,6 @@ circuit-breaker.instances:
     - topic4Consumer-in-0
   cb-instance-topic5:
     - topic5Consumer-in-0
-
-retry.instances:
-  retry-instance-topic7:
-    - cb-instance-topic7
 
 resilience4j.circuitbreaker:
   configs:
@@ -94,8 +94,6 @@ resilience4j.circuitbreaker:
       base-config: custom
     cb-instance-topic5:
       base-config: default
-    cb-instance-topic7:
-      base-config: default
 
 resilience4j.retry:
   configs:
@@ -131,8 +129,6 @@ resilience4j.retry:
     retry-instance-topic4:
       base-config: custom2
     retry-instance-topic5:
-      base-config: default
-    retry-instance-topic7:
       base-config: default
 
 resilience4j.ratelimiter:

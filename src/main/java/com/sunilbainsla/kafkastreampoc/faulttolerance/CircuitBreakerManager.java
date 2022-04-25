@@ -1,6 +1,6 @@
-package com.sunilbainsla.kafkastreampoc.resilience;
+package com.sunilbainsla.kafkastreampoc.faulttolerance;
 
-import com.sunilbainsla.kafkastreampoc.resilience.config.CircuitBreakerConfiguration;
+import com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerConfiguration;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.event.CircuitBreakerOnStateTransitionEvent;
 import lombok.extern.slf4j.Slf4j;

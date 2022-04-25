@@ -1,4 +1,4 @@
-package com.sunilbainsla.kafkastreampoc.resilience.config;
+package com.sunilbainsla.kafkastreampoc.faulttolerance.config;
 
 import io.github.resilience4j.common.retry.configuration.RetryConfigCustomizer;
 import io.github.resilience4j.core.IntervalFunction;

@@ -5,8 +5,10 @@ import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.cloud.stream.annotation.StreamRetryTemplate;
 import org.springframework.cloud.stream.binder.RequeueCurrentMessageException;
 import org.springframework.context.annotation.Bean;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;
@@ -25,7 +27,11 @@ public class Topic7ConsumerService {
 
     private void businessLogic(Object key, TopicMessage val) {
         log.debug("topic7Consumer: {}", val);
-        pocRestClient.restClient7(val.getMessage());
+        try {
+            pocRestClient.restClient7(val.getMessage());
+        } catch (Exception ignored) {
+            log.debug("Producer goes here...");
+        }
         log.debug("topic7Consumer end...");
     }
 }
