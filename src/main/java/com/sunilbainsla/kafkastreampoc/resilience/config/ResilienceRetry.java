@@ -27,7 +27,7 @@ public class ResilienceRetry {
     public RetryConfig defaultRetryConfig(List<CircuitBreaker> circuitBreakers) {
         return RetryConfig
                 .custom()
-                .maxAttempts(3)
+                .maxAttempts(10)
                 .retryExceptions(RestClientException.class,
                         CallNotPermittedException.class)
                 .intervalBiFunction(

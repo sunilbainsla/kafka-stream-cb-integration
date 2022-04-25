@@ -16,20 +16,16 @@ import java.util.function.Consumer;
 @Slf4j
 public class Topic7ConsumerService {
 
-  private final PocRestClient pocRestClient;
+    private final PocRestClient pocRestClient;
 
-  @Bean
-  public Consumer<KStream<Object, TopicMessage>> topic7Consumer() {
-    return input -> input.foreach(this::businessLogic);
-  }
-
-  private void businessLogic(Object key, TopicMessage val) {
-    log.debug("topic7Consumer: {}", val);
-    try {
-      pocRestClient.restClient7(val.getMessage());
-    } catch (Exception e) {
-      throw new RequeueCurrentMessageException(e);
+    @Bean
+    public Consumer<KStream<Object, TopicMessage>> topic7Consumer() {
+        return input -> input.foreach(this::businessLogic);
     }
-    log.debug("topic7Consumer end...");
-  }
+
+    private void businessLogic(Object key, TopicMessage val) {
+        log.debug("topic7Consumer: {}", val);
+        pocRestClient.restClient7(val.getMessage());
+        log.debug("topic7Consumer end...");
+    }
 }
