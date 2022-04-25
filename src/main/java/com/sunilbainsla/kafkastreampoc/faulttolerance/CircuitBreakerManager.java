@@ -33,13 +33,13 @@ public class CircuitBreakerManager {
         this.circuitBreakerConfiguration = circuitBreakerConfiguration;
     }
 
-//    @PostConstruct
-//    public void postConstruct() {
-//        circuitBreakerRegistry
-//                .getAllCircuitBreakers()
-//                .forEach(circuitBreaker -> circuitBreaker.getEventPublisher()
-//                        .onStateTransition(this::controlStateTransition));
-//    }
+    @PostConstruct
+    public void postConstruct() {
+        circuitBreakerRegistry
+                .getAllCircuitBreakers()
+                .forEach(circuitBreaker -> circuitBreaker.getEventPublisher()
+                        .onStateTransition(this::controlStateTransition));
+    }
 
     private void controlStateTransition(CircuitBreakerOnStateTransitionEvent event) {
         log.info("{} circuit breaker: {}", event.getCircuitBreakerName(), event.getStateTransition());
