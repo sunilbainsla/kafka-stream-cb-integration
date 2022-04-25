@@ -41,6 +41,7 @@ spring.cloud.stream:
       topic5Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic5Consumer
       topic6Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic6Consumer
       topic7Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic7Consumer
+      topic8Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic8Consumer
     binder:
       configuration:
         commit.interval.ms: 1000
