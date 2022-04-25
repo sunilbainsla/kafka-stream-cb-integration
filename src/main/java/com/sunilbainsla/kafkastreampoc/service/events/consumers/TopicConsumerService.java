@@ -25,8 +25,7 @@ public class TopicConsumerService {
     return input -> input.foreach(this::businessLogic);
   }
 
-  @StreamRetryTemplate
-  RetryTemplate customRetryTemplate() {
+  private RetryTemplate customRetryTemplate() {
     return RetryTemplate.builder().maxAttempts(3).fixedBackoff(1).build();
   }
 

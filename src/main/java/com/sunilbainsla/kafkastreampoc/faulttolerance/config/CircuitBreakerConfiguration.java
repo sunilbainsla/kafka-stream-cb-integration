@@ -1,4 +1,4 @@
-package com.sunilbainsla.kafkastreampoc.resilience.config;
+package com.sunilbainsla.kafkastreampoc.faulttolerance.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
