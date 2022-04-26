@@ -30,7 +30,8 @@ public class Topic7ConsumerService {
         try {
             pocRestClient.restClient7(val.getMessage());
         } catch (Exception ignored) {
-            log.debug("Producer goes here...");
+           // throw new RequeueCurrentMessageException("test exception"); for REPLACE_THREAD
+           log.debug("Producer goes here...");
         }
         log.debug("topic7Consumer end...");
     }
