@@ -18,7 +18,6 @@ public class CircuitBreakerInstances {
 
     public static final String CIRCUIT_BREAKER_INSTANCE_TOPIC_6 = "circuit-breaker-instance-topic6";
     public static final String CIRCUIT_BREAKER_INSTANCE_TOPIC_7 = "circuit-breaker-instance-topic7";
-    public static final String CIRCUIT_BREAKER_INSTANCE_TOPIC_8 = "circuit-breaker-instance-topic8";
 
     private final CircuitBreakerRegistry circuitBreakerRegistry;
 
@@ -46,14 +45,6 @@ public class CircuitBreakerInstances {
     @Bean
     public CircuitBreaker circuitBreakerInstanceTopic7(CircuitBreakerConfig defaultCircuitBreakerConfig) {
         var cb = circuitBreakerRegistry.circuitBreaker(CIRCUIT_BREAKER_INSTANCE_TOPIC_7, defaultCircuitBreakerConfig);
-        cb.getEventPublisher().onStateTransition(event ->
-                log.info("{} circuit breaker: {}", event.getCircuitBreakerName(), event.getStateTransition()));
-        return cb;
-    }
-
-    @Bean
-    public CircuitBreaker circuitBreakerInstanceTopic8(CircuitBreakerConfig defaultCircuitBreakerConfig) {
-        var cb = circuitBreakerRegistry.circuitBreaker(CIRCUIT_BREAKER_INSTANCE_TOPIC_8, defaultCircuitBreakerConfig);
         cb.getEventPublisher().onStateTransition(event ->
                 log.info("{} circuit breaker: {}", event.getCircuitBreakerName(), event.getStateTransition()));
         return cb;

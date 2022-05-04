@@ -6,147 +6,21 @@ logging.level:
   com.sunilbainsla: DEBUG
 
 spring.cloud.stream.bindings:
-  topicConsumer-in-0:
-    destination: topic1
-    group: topic-consumer-group-1
-  topic2Consumer-in-0:
-    destination: topic2
-    group: topic2-consumer-group-1
-  topic3Consumer-in-0:
-    destination: topic3
-    group: topic3-consumer-group-1
-  topic4Consumer-in-0:
-    destination: topic4
-    group: topic4-consumer-group-1
-  topic5Consumer-in-0:
-    destination: topic5
-    group: topic5-consumer-group-1
   topic6Consumer-in-0:
     destination: topic6
     group: topic6-consumer-group-1
   topic7Consumer-in-0:
     destination: topic7
     group: topic7-consumer-group-1
-  topic8Consumer-in-0:
-    destination: topic8
-    group: topic8-consumer-group-1
 spring.cloud.stream:
-  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;
+  function.definition: topic6Consumer;topic7Consumer
   kafka.streams:
     bindings:
-      topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
-      topic2Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic2Consumer
-      topic3Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic3Consumer
-      topic4Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic4Consumer
-      topic5Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic5Consumer
       topic6Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic6Consumer
       topic7Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic7Consumer
-      topic8Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic8Consumer
     binder:
       configuration:
         commit.interval.ms: 1000
-        processing.guarantee: exactly_once_v2
+        processing.guarantee: exactly_once
         max.poll.interval.ms: 2147483647 # 300000
       deserializationExceptionHandler: logAndContinue
-
-circuit-breaker.instances:
-  cb-instance-topic:
-    - topicConsumer-in-0
-  cb-instance-topic2:
-    - topic2Consumer-in-0
-  cb-instance-topic3:
-    - topic3Consumer-in-0
-  cb-instance-topic4:
-    - topic4Consumer-in-0
-  cb-instance-topic5:
-    - topic5Consumer-in-0
-
-resilience4j.circuitbreaker:
-  configs:
-    default:
-      wait-duration-in-open-state: 60s
-      permitted-number-of-calls-in-half-open-state: 3
-      automatic-transition-from-open-to-half-open-enabled: true
-      sliding-window-type: count-based
-      sliding-window-size: 10
-      minimum-number-of-calls: 3
-      slow-call-duration-threshold: 10s
-      slow-call-rate-threshold: 60
-      failure-rate-threshold: 60
-      record-exceptions:
-        - org.springframework.web.client.RestClientException
-    custom:
-      wait-duration-in-open-state: 60s
-      permitted-number-of-calls-in-half-open-state: 1
-      automatic-transition-from-open-to-half-open-enabled: true
-      sliding-window-type: count-based
-      sliding-window-size: 10
-      minimum-number-of-calls: 3
-      slow-call-duration-threshold: 10s
-      slow-call-rate-threshold: 60
-      failure-rate-threshold: 60
-      record-exceptions:
-        - java.io.IOException
-  instances:
-    cb-instance-topic:
-      base-config: default
-    cb-instance-topic2:
-      base-config: default
-    cb-instance-topic3:
-      base-config: default
-    cb-instance-topic4:
-      base-config: custom
-    cb-instance-topic5:
-      base-config: default
-
-resilience4j.retry:
-  configs:
-    default:
-      max-attempts: 3
-      retry-exceptions:
-        - org.springframework.web.client.RestClientException
-    jitter-backoff:
-      max-attempts: 4
-      wait-duration: 5s
-      enable-exponential-backoff: true
-      exponential-backoff-multiplier: 2
-      enable-randomized-wait: true
-      randomized-wait-factor: 0.6D
-      exponential-max-wait-duration: 15s
-      retry-exceptions:
-        - org.springframework.web.client.RestClientException
-    custom:
-      maxAttempts: 4
-      retry-exceptions:
-        - org.springframework.web.client.RestClientException
-    custom2:
-      maxAttempts: 20
-      retry-exceptions:
-        - io.github.resilience4j.ratelimiter.RequestNotPermitted
-  instances:
-    retry-instance-topic:
-      base-config: default
-    retry-instance-topic2:
-      base-config: default
-    retry-instance-topic3:
-      base-config: jitter-backoff
-    retry-instance-topic4:
-      base-config: custom2
-    retry-instance-topic5:
-      base-config: default
-
-resilience4j.ratelimiter:
-  instances:
-    rate-instance:
-      limitForPeriod: 2
-      limitRefreshPeriod: 2s
-      #timeoutDuration: 2
-      #registerHealthIndicator: false
-resilience4j.timelimiter:
-  configs:
-    default:
-      cancelRunningFuture: false
-      #timeoutDuration: 2s
-  instances:
-    time-instance:
-      baseConfig: default

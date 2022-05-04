@@ -26,7 +26,6 @@ public class RetryInstances {
     private final RetryRegistry retryRegistry;
     private final CircuitBreaker circuitBreakerInstanceTopic6;
     private final CircuitBreaker circuitBreakerInstanceTopic7;
-    private final CircuitBreaker circuitBreakerInstanceTopic8;
 
     public RetryConfig defaultRetryConfig(CircuitBreaker circuitBreaker) {
         return RetryConfig
@@ -64,15 +63,5 @@ public class RetryInstances {
     public Retry retryInstanceTopic7() {
         RetryConfig retryConfig = defaultRetryConfig(circuitBreakerInstanceTopic7);
         return retryRegistry.retry(RETRY_INSTANCE_TOPIC_7, retryConfig);
-    }
-
-    @Bean
-    @StreamRetryTemplate
-    public RetryTemplate retryInstanceTopic8() {
-        return RetryTemplate.builder()
-                .withinMillis(Duration.ofMinutes(2).toMillis())
-                .customBackoff(new FixedBackOffPolicyWithCb(Duration.ofSeconds(1),
-                        circuitBreakerInstanceTopic8))
-                .build();
     }
 }
