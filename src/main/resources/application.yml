@@ -11,7 +11,7 @@ spring.cloud.stream.bindings:
     group: topic-consumer-group-1
   topic2Consumer-in-0:
     destination: topic2
-    group: topic2-consumer-group-1
+    group: topic2-consumer-group-1F
   topic3Consumer-in-0:
     destination: topic3
     group: topic3-consumer-group-1
@@ -30,8 +30,14 @@ spring.cloud.stream.bindings:
   topic8Consumer-in-0:
     destination: topic8
     group: topic8-consumer-group-1
+  paymentProcessor-in-0:
+      destination: payment-processor
+  paymentProcessor-out-0:
+    destination: payment-processor-out
+  paymentProcessor-out-1:
+    destination: payment-processor-out2
 spring.cloud.stream:
-  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;
+  function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
@@ -42,8 +48,12 @@ spring.cloud.stream:
       topic6Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic6Consumer
       topic7Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic7Consumer
       topic8Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic8Consumer
+      paymentProcessor-in-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessor
+      paymentProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout
+      paymentProcessor-out-1.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout1
     binder:
       configuration:
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
         commit.interval.ms: 1000
         processing.guarantee: exactly_once_v2
         max.poll.interval.ms: 2147483647 # 300000
@@ -138,10 +148,10 @@ resilience4j.retry:
 resilience4j.ratelimiter:
   instances:
     rate-instance:
-      limitForPeriod: 2
-      limitRefreshPeriod: 2s
-      #timeoutDuration: 2
-      #registerHealthIndicator: false
+      limitForPeriod: 1
+      limitRefreshPeriod: 5s
+      #timeoutDuration: -1
+      registerHealthIndicator: false
 resilience4j.timelimiter:
   configs:
     default:

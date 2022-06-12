@@ -37,6 +37,10 @@ public class StreamBridgeProducersService {
     topicMessage.setId(UUID.randomUUID() + "-v1");
     topicMessage.setMessage(topicRequest.getMessage());
     String publisherTopic = "topic" + id;
+    if(id.equalsIgnoreCase("9"))
+    {
+      publisherTopic = "payment-processor";
+    }
     log.debug("Producer {}: {}", publisherTopic, topicMessage);
     streamBridge.send(publisherTopic, topicMessage);
   }
