@@ -1,6 +1,6 @@
 package com.sunilbainsla.kafkastreampoc.service.events.consumers;
 
-import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
+import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +22,11 @@ public class Topic3ConsumerService {
   }
 
   @Bean
-  public Consumer<KStream<Object, TopicMessage>> topic3Consumer() {
+  public Consumer<KStream<Object, Payment>> topic3Consumer() {
     return input -> input.foreach(this::businessLogic);
   }
 
-  private void businessLogic(Object key, TopicMessage val) {
+  private void businessLogic(Object key, Payment val) {
     log.debug("topic3Consumer start: {}", val);
     pocRestClient.restClient3(val.getMessage());
     log.debug("topic3Consumer end...");

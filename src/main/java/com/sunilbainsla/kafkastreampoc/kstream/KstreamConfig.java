@@ -1,20 +1,18 @@
 package com.sunilbainsla.kafkastreampoc.kstream;
 
-import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
+import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.streams.kstream.KStream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Configuration
 @Log4j2
 public class KstreamConfig {
     @Bean
-    public Function<KStream<String, TopicMessage>,KStream<String, String>> paymentProcessor2() {
+    public Function<KStream<String, Payment>,KStream<String, String>> paymentProcessor2() {
         return input -> input.filter(
                 (k,v)->
                         v.getMessage().startsWith("Sunil")).
@@ -32,7 +30,7 @@ public class KstreamConfig {
 
 
     @Bean
-    public Function<KStream<String, TopicMessage>, KStream<String, TopicMessage> []> paymentProcessor() {
+    public Function<KStream<String, Payment>, KStream<String, Payment> []> paymentProcessor() {
         return new PaymentTopology();
     }
 }

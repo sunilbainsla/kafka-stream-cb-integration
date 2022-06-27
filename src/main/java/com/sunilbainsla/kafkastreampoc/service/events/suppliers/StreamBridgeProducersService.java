@@ -1,8 +1,9 @@
 package com.sunilbainsla.kafkastreampoc.service.events.suppliers;
 
+import com.sunilbainsla.kafkastreampoc.model.kafka.Account;
 import com.sunilbainsla.kafkastreampoc.model.kafka.Sensor;
-import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
-import com.sunilbainsla.kafkastreampoc.model.request.TopicRequest;
+import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
+import com.sunilbainsla.kafkastreampoc.model.request.Payments;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
@@ -32,16 +33,23 @@ public class StreamBridgeProducersService {
     streamBridge.send("topic1", sensor);
   }
 
-  public void topicPublisher(String id, TopicRequest topicRequest) {
-    TopicMessage topicMessage = new TopicMessage();
-    topicMessage.setId(UUID.randomUUID() + "-v1");
-    topicMessage.setMessage(topicRequest.getMessage());
+  public void topicPublisher(String id, Payments payments) {
+    Payment payment = new Payment();
+    payment.setId(UUID.randomUUID() + payments.getId());
+    payment.setMessage(payments.getMessage());
     String publisherTopic = "topic" + id;
     if(id.equalsIgnoreCase("9"))
     {
+      payment.setReference(payments.getReference());
+      payment.setCurrency(payments.getCurrency());
+      payment.setNumericReference(payments.getNumericReference());
+      payment.setAmount(payments.getAmount());
+      Account  account =new Account();
+      account.setAccountName(payments.getDebtorAccount().getAccountName());
+      payment.setDebtorAccount(account);
       publisherTopic = "payment-processor";
     }
-    log.debug("Producer {}: {}", publisherTopic, topicMessage);
-    streamBridge.send(publisherTopic, topicMessage);
+    log.debug("Producer {}: {}", publisherTopic, payment);
+    streamBridge.send(publisherTopic, payment);
   }
 }

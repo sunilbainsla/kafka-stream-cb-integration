@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-
-public class TopicMessage {
-    private String id;
-    private String message;
+public class Account {
+    String accountName;
+    String schemeName;
+    String identification;
 }

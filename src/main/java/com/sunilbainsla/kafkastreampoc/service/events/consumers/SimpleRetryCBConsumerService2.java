@@ -1,6 +1,6 @@
 package com.sunilbainsla.kafkastreampoc.service.events.consumers;
 
-import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
+import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +19,11 @@ public class SimpleRetryCBConsumerService2 {
   }
 
   @Bean
-  public Consumer<KStream<Object, TopicMessage>> topic2Consumer() {
+  public Consumer<KStream<Object, Payment>> topic2Consumer() {
     return input -> input.foreach(this::businessLogic);
   }
 
-  private void businessLogic(Object key, TopicMessage val) {
+  private void businessLogic(Object key, Payment val) {
     log.debug("topic2Consumer start: {}", val);
     pocRestClient.restClient2(val.getMessage());
     log.debug("topic2Consumer end...");

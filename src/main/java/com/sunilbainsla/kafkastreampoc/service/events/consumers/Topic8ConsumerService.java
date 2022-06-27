@@ -1,6 +1,6 @@
 package com.sunilbainsla.kafkastreampoc.service.events.consumers;
 
-import com.sunilbainsla.kafkastreampoc.model.kafka.TopicMessage;
+import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +20,11 @@ public class Topic8ConsumerService {
     private final RetryTemplate retryInstanceTopic8;
 
     @Bean
-    public Consumer<KStream<Object, TopicMessage>> topic8Consumer() {
+    public Consumer<KStream<Object, Payment>> topic8Consumer() {
         return input -> input.foreach(this::businessLogic);
     }
 
-    private void businessLogic(Object key, TopicMessage val) {
+    private void businessLogic(Object key, Payment val) {
         log.debug("topic8Consumer: {}", val);
         retryInstanceTopic8.execute(context -> {
             pocRestClient.restClient8(val.getMessage());
