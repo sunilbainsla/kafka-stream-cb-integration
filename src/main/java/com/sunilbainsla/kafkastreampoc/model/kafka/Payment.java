@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 
 public class Payment {
-    private String id;
+    String paymentId;
     private String message;
     String currency;
     int amount;
