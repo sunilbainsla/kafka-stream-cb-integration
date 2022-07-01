@@ -33,9 +33,15 @@ spring.cloud.stream.bindings:
   paymentProcessor-in-0:
       destination: payment-processor
   paymentProcessor-out-0:
-    destination: payment-processor-out
+    destination: payment-processor-message-sunil
   paymentProcessor-out-1:
-    destination: payment-processor-out2
+    destination: payment-processor-greater-amount
+  paymentProcessor-out-2:
+    destination: payment-processor-gbp-currency
+#  paymentProcessor-out-3:
+#    destination: payment-processor-msg-transform
+#  paymentProcessor-out-4:
+#    destination: payment-processor-numeric-ref
 spring.cloud.stream:
   function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;
   kafka.streams:
