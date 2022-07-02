@@ -8,10 +8,10 @@ import org.apache.kafka.streams.kstream.ValueTransformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
 public class PaymentValueTransformer implements ValueTransformer< Payment,Payment> {
-private ProcessorContext processorContext;
+
     @Override
     public void init(ProcessorContext processorContext) {
-        this.processorContext=processorContext;
+
 
     }
 

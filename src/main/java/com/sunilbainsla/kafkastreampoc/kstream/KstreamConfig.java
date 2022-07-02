@@ -7,6 +7,7 @@ import org.apache.kafka.streams.kstream.ValueTransformer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
 import java.util.function.Function;
 
 @Configuration
@@ -35,6 +36,7 @@ public class KstreamConfig {
     }
 
     @Bean
+
     public Function<KStream<String, Payment>, KStream<String, Payment> []> paymentProcessor(PaymentValueTransformer paymentValueTransformer) {
         return new PaymentTopology(paymentValueTransformer);
     }

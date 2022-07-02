@@ -1,8 +1,7 @@
 spring.application.name: kafka-stream-poc
 server.port: 8080
-
 logging.level:
-  org.springframework: INFO
+  org.springframework: DEBUG
   com.sunilbainsla: DEBUG
 
 spring.cloud.stream.bindings:
@@ -31,15 +30,15 @@ spring.cloud.stream.bindings:
     destination: topic8
     group: topic8-consumer-group-1
   paymentProcessor-in-0:
-      destination: payment-processor
+    destination: payment-processor
   paymentProcessor-out-0:
     destination: payment-processor-message-sunil
   paymentProcessor-out-1:
     destination: payment-processor-greater-amount
   paymentProcessor-out-2:
     destination: payment-processor-gbp-currency
-#  paymentProcessor-out-3:
-#    destination: payment-processor-msg-transform
+  paymentProcessor-out-3:
+    destination: payment-processor-map-transform
 #  paymentProcessor-out-4:
 #    destination: payment-processor-numeric-ref
 spring.cloud.stream:
