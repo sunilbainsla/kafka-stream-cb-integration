@@ -39,8 +39,8 @@ spring.cloud.stream.bindings:
     destination: payment-processor-gbp-currency
   paymentProcessor-out-3:
     destination: payment-processor-map-transform
-#  paymentProcessor-out-4:
-#    destination: payment-processor-numeric-ref
+  paymentProcessor-out-4:
+    destination: payment-processor-transform-values
 spring.cloud.stream:
   function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;
   kafka.streams:
@@ -56,6 +56,9 @@ spring.cloud.stream:
       paymentProcessor-in-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessor
       paymentProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout
       paymentProcessor-out-1.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout1
+      paymentProcessor-out-2.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout2
+      paymentProcessor-out-3.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout3
+      paymentProcessor-out-4.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout4
     binder:
       configuration:
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
