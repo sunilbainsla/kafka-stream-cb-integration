@@ -7,37 +7,42 @@ import org.apache.kafka.streams.kstream.ValueTransformer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.util.function.Function;
 
 @Configuration
 @Log4j2
 public class KstreamConfig {
     @Bean
-    public Function<KStream<String, Payment>,KStream<String, String>> paymentProcessor2() {
+    public Function<KStream<String, Payment>, KStream<String, String>> paymentProcessor2() {
         return input -> input.filter(
-                (k,v)->
-                        v.getMessage().startsWith("Sunil")).
+                        (k, v) ->
+                                v.getMessage().startsWith("Sunil")).
                 mapValues(
-                        (k,v)->
+                        (k, v) ->
                                 v.getMessage().toUpperCase())
                 .selectKey(
-                        (k,v)->
-                                v.substring(0,3))
-                .peek((k,v)->{
-                              System.out.println(v);
-                            }
-        );
+                        (k, v) ->
+                                v.substring(0, 3))
+                .peek((k, v) -> {
+                            System.out.println(v);
+                        }
+                );
     }
+
     @Bean
-    ValueTransformer<Payment,Payment> paymentValueTransformer()
-    {
+    ValueTransformer<Payment, Payment> paymentValueTransformer() {
         return new PaymentValueTransformer();
     }
 
     @Bean
 
-    public Function<KStream<String, Payment>, KStream<String, Payment> []> paymentProcessor(PaymentValueTransformer paymentValueTransformer) {
-        return new PaymentTopology(paymentValueTransformer);
+    public Function<KStream<String, Payment>, KStream<String, Payment>[]> paymentProcessor() {
+        return new PaymentTopology();
+    }
+
+    @Bean
+
+    public Function<KStream<String, Payment>, KStream<String, Payment>[]> tableProcessor() {
+        return new ArbitraryTopology();
     }
 }
