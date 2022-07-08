@@ -42,7 +42,7 @@ public class KstreamConfig {
 
     @Bean
 
-    public Function<KStream<String, Payment>, KStream<String, Payment>[]> tableProcessor() {
-        return new ArbitraryTopology();
+    public Function<KStream<String, Employee>, KStream<String, Employee>[]> employeeProcessor() {
+        return new EmployeeTopology();
     }
 }
