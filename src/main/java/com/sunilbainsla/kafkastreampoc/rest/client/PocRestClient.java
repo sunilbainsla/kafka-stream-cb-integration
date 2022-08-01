@@ -9,7 +9,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 
-import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.*;
+import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.CIRCUIT_BREAKER_INSTANCE_TOPIC_6;
+import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.CIRCUIT_BREAKER_INSTANCE_TOPIC_7;
+import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.CircuitBreakerInstances.CIRCUIT_BREAKER_INSTANCE_TOPIC_8;
 import static com.sunilbainsla.kafkastreampoc.faulttolerance.config.RetryInstances.RETRY_INSTANCE_TOPIC_7;
 
 @Service
@@ -66,6 +68,7 @@ public class PocRestClient {
     // @RateLimiter(name = RATE_INSTANCE )
     @RateLimiter(name = RATE_INSTANCE)
     public void restClient4(String message) {
+        System.out.println("---------------------------------------------------------------------------------------------------->Calling form 3 for message= " + message);
         internalRestClient(message);
     }
 

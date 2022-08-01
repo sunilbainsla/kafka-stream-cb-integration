@@ -1,11 +1,11 @@
 package com.sunilbainsla.kafkastreampoc.kstream;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.ToString;
 
-@ToString
+@JsonIgnoreProperties
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "total_salary",
@@ -67,3 +67,4 @@ public class DepartmentAggregate {
     }
 
 }
+

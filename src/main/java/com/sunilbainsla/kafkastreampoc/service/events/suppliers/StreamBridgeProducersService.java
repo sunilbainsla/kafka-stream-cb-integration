@@ -36,10 +36,22 @@ public class StreamBridgeProducersService {
 
         String publisherTopic = "topic" + id;
         if (Integer.parseInt(id) <= 9) {
+            if (Integer.parseInt(id) == 9) {
+                publisherTopic = "payment-processor";
+            } else {
+                publisherTopic = "topic" + id;
+            }
+            String tempMsg = payment.getMessage();
+            if (publisherTopic.equalsIgnoreCase("topic4")) {
+                for (int i = 0; i < 1000; i++) {
+                    payment.setMessage(tempMsg + " record no " + String.valueOf(i));
+                    log.info("Publisher msg for the record \n" + payment.getMessage());
+                    streamBridge.send(publisherTopic, payment);
+                }
 
-            publisherTopic = "payment-processor";
-            log.debug("Producer {}: {}", publisherTopic, payment);
-            streamBridge.send(publisherTopic, payment);
+            } else {
+                streamBridge.send(publisherTopic, payment);
+            }
         } else {
             Employee employee = new Employee();
             employee.setDepartment("Engineering");

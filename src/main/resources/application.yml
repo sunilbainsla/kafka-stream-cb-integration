@@ -1,8 +1,8 @@
 spring.application.name: kafka-stream-poc
 server.port: 8080
 logging.level:
-  org.springframework: DEBUG
-  com.sunilbainsla: DEBUG
+  org.springframework: INFO
+  com.sunilbainsla: INFO
 
 spring.cloud.stream.bindings:
   topicConsumer-in-0:
@@ -47,7 +47,7 @@ spring.cloud.stream.bindings:
     destination: employee-processor-out
 spring.cloud.stream:
   # function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;employeeProcessor;
-  function.definition: topicConsumer;employeeProcessor;
+  function.definition: topicConsumer;topic4Consumer;
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
@@ -163,8 +163,8 @@ resilience4j.retry:
 resilience4j.ratelimiter:
   instances:
     rate-instance:
-      limitForPeriod: 1
-      limitRefreshPeriod: 5s
+      limitForPeriod: 10
+      limitRefreshPeriod: 2s
       #timeoutDuration: -1
       registerHealthIndicator: false
 resilience4j.timelimiter:
