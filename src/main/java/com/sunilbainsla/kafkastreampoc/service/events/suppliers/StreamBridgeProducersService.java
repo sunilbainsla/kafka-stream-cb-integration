@@ -43,7 +43,7 @@ public class StreamBridgeProducersService {
             }
             String tempMsg = payment.getMessage();
             if (publisherTopic.equalsIgnoreCase("topic4")) {
-                for (int i = 0; i < 1000; i++) {
+                for (int i = 0; i < 2000; i++) {
                     payment.setMessage(tempMsg + " record no " + String.valueOf(i));
                     log.info("Publisher msg for the record \n" + payment.getMessage());
                     streamBridge.send(publisherTopic, payment);

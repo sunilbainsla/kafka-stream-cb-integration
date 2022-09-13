@@ -1,8 +1,8 @@
 package com.sunilbainsla.kafkastreampoc.rest.client;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.vavr.CheckedRunnable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -66,10 +66,22 @@ public class PocRestClient {
     // if timeoutDuration will not set default will be 5s and in case  limitRefreshtime is >5 rate limiter generate exception. So better to use more than 5 s in timeout or
     // if u dont want to timeout put timeoutDuration: -1
     // @RateLimiter(name = RATE_INSTANCE )
-    @RateLimiter(name = RATE_INSTANCE)
-    public void restClient4(String message) {
+    //    @RateLimiter(name = RATE_INSTANCE)
+    //    public void restClient4(String message) {
+    //        System.out.println("---------------------------------------------------------------------------------------------------->Calling form 3 for message= " + message);
+    //        internalRestClient(message);
+    //    }
+
+    public CheckedRunnable restClient4(String message) {
         System.out.println("---------------------------------------------------------------------------------------------------->Calling form 3 for message= " + message);
         internalRestClient(message);
+        return new CheckedRunnable() {
+            @Override
+            public void run() throws Throwable {
+                System.out.println("from run method");
+
+            }
+        };
     }
 
     // With certain retry and circuit breaker
