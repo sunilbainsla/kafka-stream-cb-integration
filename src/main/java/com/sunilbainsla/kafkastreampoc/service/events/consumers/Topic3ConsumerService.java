@@ -1,11 +1,14 @@
 package com.sunilbainsla.kafkastreampoc.service.events.consumers;
 
+import com.sunilbainsla.kafkastreampoc.controllers.RestartController;
 import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import com.sunilbainsla.kafkastreampoc.rest.client.PocRestClient;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,9 +16,12 @@ import org.springframework.stereotype.Service;
 /**
  * Retries with jitter
  */
+@Component
 public class Topic3ConsumerService {
-
+  @Autowired
+  private RestartController restartController;
   private final PocRestClient pocRestClient;
+
 
   public Topic3ConsumerService(PocRestClient pocRestClient) {
     this.pocRestClient = pocRestClient;
@@ -27,8 +33,10 @@ public class Topic3ConsumerService {
   }
 
   private void businessLogic(Object key, Payment val) {
-    log.debug("topic3Consumer start: {}", val);
-    pocRestClient.restClient3(val.getMessage());
-    log.debug("topic3Consumer end...");
+    System.out.println("before re start: {}"+ val);
+    if(null!=val.getMessage() &&val.getMessage().equalsIgnoreCase("Sunil")){
+    restartController.restart();
+    }
+    System.out.println("topic3Consumer end...");
   }
 }

@@ -1,9 +1,9 @@
 spring.application.name: kafka-stream-poc
 server.port: 8080
 logging.level:
-  org.springframework: INFO
+  org.springframework: ERROR
   com.sunilbainsla: INFO
-
+spring.main.allow-bean-definition-overriding: true
 spring.cloud.stream.bindings:
   topicConsumer-in-0:
     destination: topic1
@@ -47,7 +47,7 @@ spring.cloud.stream.bindings:
     destination: employee-processor-out
 spring.cloud.stream:
   # function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;employeeProcessor;
-  function.definition: topicConsumer;topic4Consumer;
+  function.definition: topicConsumer;topic3Consumer
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
