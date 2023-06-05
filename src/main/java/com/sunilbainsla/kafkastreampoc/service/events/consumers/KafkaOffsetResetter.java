@@ -11,7 +11,7 @@ public class KafkaOffsetResetter {
     public static void main(String[] args) {
         String topic = "topic3";
         int partition = 0;
-        long desiredOffset = 2; // Specify the desired offset value
+        long desiredOffset = 10; // Specify the desired offset value
 
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
