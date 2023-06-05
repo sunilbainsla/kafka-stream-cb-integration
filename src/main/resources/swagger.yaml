@@ -1,0 +1,53 @@
+swagger: "2.0"
+
+info:
+  title: Replay utilities API
+  version: 1.0.0
+
+paths:
+  /api/retry:
+    post:
+      summary: Create a retry
+      description: Use this endpoint to perform retries.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/retry'
+      responses:
+        '201':
+          description: Resource created successfully
+        '400':
+          description: Bad request
+
+definitions:
+  retry:
+    type: object
+    properties:
+      source:
+        type: string
+        enum:
+          - DB
+          - KAFKA
+      destination:
+        type: string
+    allOf:
+      - $ref: '#/definitions/dbRetry'
+        # Include properties for DB-specific retry
+        # (e.g., tableName)
+      - $ref: '#/definitions/kafkaRetry'
+        # Include properties for Kafka-specific retry
+        # (e.g., topicName)
+
+  dbRetry:
+    type: object
+    properties:
+      tableName:
+        type: string
+
+  kafkaRetry:
+    type: object
+    properties:
+      topicName:
+        type: string
