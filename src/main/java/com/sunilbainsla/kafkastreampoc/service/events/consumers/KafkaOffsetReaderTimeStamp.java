@@ -8,9 +8,9 @@ public class KafkaOffsetReaderTimeStamp {
     public static void main(String[] args) {
         String topic = "topic3";
         int partition = 0;
-       // Instant desiredTimestamp = Instant.parse("2023-06-01T12:00:00Z");
-        long desiredTimestampMillis = 1686043843674L;
-        Instant desiredTimestamp = Instant.ofEpochMilli(desiredTimestampMillis);
+       Instant desiredTimestamp = Instant.parse("2023-06-01T12:00:00Z");
+//        long desiredTimestampMillis = 1686043843674L;
+//        //Instant desiredTimestamp = Instant.ofEpochMilli(desiredTimestampMillis);
 
         KafkaOffsetReaderTimeStamp messageReader = new KafkaOffsetReaderTimeStamp();
         messageReader.readMessageFromTimestamp(topic, partition, desiredTimestamp);
