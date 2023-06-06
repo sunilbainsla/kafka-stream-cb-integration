@@ -8,7 +8,9 @@ public class KafkaOffsetReaderTimeStamp {
     public static void main(String[] args) {
         String topic = "topic3";
         int partition = 0;
-        Instant desiredTimestamp = Instant.parse("2023-06-01T12:00:00Z");
+       // Instant desiredTimestamp = Instant.parse("2023-06-01T12:00:00Z");
+        long desiredTimestampMillis = 1686043843674L;
+        Instant desiredTimestamp = Instant.ofEpochMilli(desiredTimestampMillis);
 
         KafkaOffsetReaderTimeStamp messageReader = new KafkaOffsetReaderTimeStamp();
         messageReader.readMessageFromTimestamp(topic, partition, desiredTimestamp);
@@ -16,8 +18,6 @@ public class KafkaOffsetReaderTimeStamp {
     }
     public void readMessageFromTimestamp(String topic, int partition, Instant timestamp) {
         Properties props = new Properties();
-
-
         props.put("enable.auto.commit", "false");
         props.put("bootstrap.servers", "localhost:9092");
         props.put("group.id", "kafka-stream-poc-topic3Consumer");
@@ -27,16 +27,14 @@ public class KafkaOffsetReaderTimeStamp {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         TopicPartition topicPartition = new TopicPartition(topic, partition);
 
-        consumer.assign(Collections.singleton(topicPartition));
+        consumer.assign(Arrays.asList(topicPartition));
         consumer.seekToBeginning(Collections.singleton(topicPartition));
 
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
-      //  long desiredOffset = searchForOffsetByTimestamp(records, topicPartition, timestamp);
-        long desiredOffset=2;//Message at offset
-
+        long desiredOffset = searchForOffsetByTimestamp(records, topicPartition, timestamp);
         if (desiredOffset >= 0) {
-            consumer.seek(topicPartition, 2);
+            consumer.seek(topicPartition, desiredOffset);
 
             ConsumerRecords<String, String> recordss = consumer.poll(Duration.ofMillis(1000));
             for (ConsumerRecord<String, String> record : recordss) {
