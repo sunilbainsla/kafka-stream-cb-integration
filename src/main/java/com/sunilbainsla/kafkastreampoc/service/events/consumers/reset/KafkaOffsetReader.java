@@ -11,7 +11,7 @@ public class KafkaOffsetReader {
     public static void main(String[] args) {
         String topic = "topic3";
         int partition = 0;
-        long offset = 9
+        long offset = 1
                 ; // Specify the desired offset value
 
         Properties props = new Properties();
