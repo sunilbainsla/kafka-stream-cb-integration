@@ -46,12 +46,21 @@ public class KafkaGetAllConsumers {
 
                     // Get the assigned partitions
                     Set<TopicPartition> assignedPartitions = offsets.keySet();
-                    OffsetAndMetadata offsetAndMetadata = new OffsetAndMetadata(1);
-                    Map<TopicPartition, OffsetAndMetadata> offsetsMap = new HashMap<>();
 
+                    Map<TopicPartition, OffsetAndMetadata> offsetsMap = new HashMap<>();
+                    OffsetAndMetadata offsetAndMetadata;
                     //for other partitions
+                    int count=0;
                     for (TopicPartition partition : assignedPartitions) {
+                        if(count==0) {
+                             offsetAndMetadata = new OffsetAndMetadata(2);
+                        }
+                        else
+                        {
+                            offsetAndMetadata = new OffsetAndMetadata(4);
+                        }
                         offsetsMap.put(partition, offsetAndMetadata);
+                        ++count;
 
                     }
                     adminClient.alterConsumerGroupOffsets(groupId, offsetsMap).all().get();
