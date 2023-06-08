@@ -7,6 +7,8 @@ import java.util.Properties;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.AlterConsumerGroupOffsetsResult;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 
@@ -16,14 +18,23 @@ public class KafkaOffsetResetExample {
         // Set the properties for the AdminClient
         Properties props = new Properties();
         props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-stream-poc-topic3Consumer");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        // Create the consumer
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+
+        // Pause the consumer to stop fetching records
+        consumer.pause(Collections.emptyList());
 
         // Create the AdminClient
         try (AdminClient adminClient = AdminClient.create(props)) {
             // Specify the consumer group, topic, partition, and offset
-            String consumerGroup = "kafka-stream-poc-topic3Consumer-e51a9efc-47bf-4e76-99ba-34cdfc070757-StreamThread-1-consumer-93fa214c-1756-4a86-baa3-69dc6b1a2154";
+            String consumerGroup = "kafka-stream-poc-topic3Consumer";
             String topic = "topic3";
             int partition = 0;
-            long offset = 2;
+            long offset = 1;
 
             // Create the TopicPartition object
             TopicPartition topicPartition = new TopicPartition(topic, partition);
@@ -38,7 +49,10 @@ public class KafkaOffsetResetExample {
             // Reset the offsets for the specified consumer group
             AlterConsumerGroupOffsetsResult result = adminClient.alterConsumerGroupOffsets(consumerGroup, offsetsMap);
             result.all().get();
+            consumer.commitSync();
 
+            // Resume the consumer to start fetching records again
+            consumer.resume(Collections.emptyList());
             System.out.println("Offset reset successful");
         } catch (Exception e) {
             e.printStackTrace();
