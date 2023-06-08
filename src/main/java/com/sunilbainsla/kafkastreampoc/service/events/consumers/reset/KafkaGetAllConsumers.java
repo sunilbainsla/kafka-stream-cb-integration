@@ -14,6 +14,7 @@ import org.apache.kafka.common.TopicPartition;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class KafkaGetAllConsumers {
 
@@ -38,21 +39,28 @@ public class KafkaGetAllConsumers {
                     // Get the consumer group description
                     KafkaFuture<ConsumerGroupDescription> groupDescriptionFuture =
                             adminClient.describeConsumerGroups(Collections.singleton(groupId)).describedGroups().get(groupId);
-                    ConsumerGroupDescription groupDescription = groupDescriptionFuture.get();
+                    ConsumerGroupDescription consumerGroupDescription = groupDescriptionFuture.get();
 
-                    // Create the TopicPartition object
+
+                    // Get the consumer group's assigned partitions
+                    Set<TopicPartition> assignedPartitions = consumerGroupDescription.members()
+                            .stream()
+                            .flatMap(member -> member.assignment().topicPartitions().stream())
+                            .collect(Collectors.toSet());
+                  // Default partition
                     TopicPartition topicPartition = new TopicPartition(topicName, 0);
-
-                    // Create the OffsetAndMetadata object
-                    OffsetAndMetadata offsetAndMetadata = new OffsetAndMetadata(3);
-
-                    // Create the map of topic partitions and offset metadata
+                    OffsetAndMetadata offsetAndMetadata = new OffsetAndMetadata(2);
                     Map<TopicPartition, OffsetAndMetadata> offsetsMap = new HashMap<>();
                     offsetsMap.put(topicPartition, offsetAndMetadata);
 
-                    // Reset the offsets for the specified consumer group
-                    AlterConsumerGroupOffsetsResult result = adminClient.alterConsumerGroupOffsets(groupId, offsetsMap);
-                    result.all().get();
+                    //for other partitions
+                    for (TopicPartition partition : assignedPartitions) {
+
+
+                        offsetsMap.put(partition, offsetAndMetadata);
+
+                    }
+                    adminClient.alterConsumerGroupOffsets(groupId, offsetsMap).all().get();
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
