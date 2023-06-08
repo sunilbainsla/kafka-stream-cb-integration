@@ -25,6 +25,7 @@ public class KafkaGetAllConsumers {
 
         // Set the topic name
         String topicName = "topic3";
+        String consumerGroupId="kafka-stream-poc-topic3Consumer";
 
         // Create the AdminClient
         try (AdminClient adminClient = AdminClient.create(adminProps)) {
@@ -35,28 +36,21 @@ public class KafkaGetAllConsumers {
             // Iterate over each consumer group
             for (ConsumerGroupListing groupListing : groupListings) {
                 String groupId = groupListing.groupId();
-                if (groupId.startsWith("kafka-stream-poc-topic3Consumer")) {
-                    // Get the consumer group description
-                    KafkaFuture<ConsumerGroupDescription> groupDescriptionFuture =
-                            adminClient.describeConsumerGroups(Collections.singleton(groupId)).describedGroups().get(groupId);
-                    ConsumerGroupDescription consumerGroupDescription = groupDescriptionFuture.get();
+                if (groupId.startsWith(consumerGroupId)) {
+                    ConsumerGroupDescription groupDescription = adminClient.describeConsumerGroups(Collections.singleton(consumerGroupId))
+                            .describedGroups().get("kafka-stream-poc-topic3Consumer")
+                            .get();
 
+                    Map<TopicPartition, OffsetAndMetadata> offsets = adminClient.listConsumerGroupOffsets(consumerGroupId)
+                            .partitionsToOffsetAndMetadata().get();
 
-                    // Get the consumer group's assigned partitions
-                    Set<TopicPartition> assignedPartitions = consumerGroupDescription.members()
-                            .stream()
-                            .flatMap(member -> member.assignment().topicPartitions().stream())
-                            .collect(Collectors.toSet());
-                  // Default partition
-                    TopicPartition topicPartition = new TopicPartition(topicName, 0);
-                    OffsetAndMetadata offsetAndMetadata = new OffsetAndMetadata(2);
+                    // Get the assigned partitions
+                    Set<TopicPartition> assignedPartitions = offsets.keySet();
+                    OffsetAndMetadata offsetAndMetadata = new OffsetAndMetadata(1);
                     Map<TopicPartition, OffsetAndMetadata> offsetsMap = new HashMap<>();
-                    offsetsMap.put(topicPartition, offsetAndMetadata);
 
                     //for other partitions
                     for (TopicPartition partition : assignedPartitions) {
-
-
                         offsetsMap.put(partition, offsetAndMetadata);
 
                     }
