@@ -20,34 +20,135 @@ paths:
           description: Resource created successfully
         '400':
           description: Bad request
-
+  /api/reset:
+    post:
+      summary: Create a reset
+      description: Use this endpoint to perform reset.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/reset'
+      responses:
+        '201':
+          description: Resource created successfully
+        '400':
+          description: Bad request
 definitions:
+  reset:
+    type: object
+    properties:
+      resetList:
+        type: array
+        items:
+          $ref: '#/definitions/resetList'
+  resetList:
+    type: object
+    properties:
+      consumerGroup:
+        type: string
+      srcTopic:
+        type: string
+      topicDetails:
+        type: array
+        items:
+          $ref: '#/definitions/resetTopicDetails'
+    required:
+      - consumerGroup
+      - topicDetails
+      - srcTopic
+  resetTopicDetails:
+    type: object
+    properties:
+      offset:
+        type: string
+      partition:
+        type: string
+    required:
+      - offset
+      - partition
   retry:
     type: object
     properties:
       source:
         type: string
-        enum:
-          - DB
-          - KAFKA
-      destination:
-        type: string
+    required:
+      - source
     allOf:
-      - $ref: '#/definitions/dbRetry'
-        # Include properties for DB-specific retry
-        # (e.g., tableName)
-      - $ref: '#/definitions/kafkaRetry'
-        # Include properties for Kafka-specific retry
-        # (e.g., topicName)
+      - properties:
+          source:
+            enum:
+              - DB
+          dbAttributes:
+            $ref: '#/definitions/dbAttributes'
+      - properties:
+          source:
+            enum:
+              - KAFKA
+          kafkaAttributes:
+            $ref: '#/definitions/kafkaAttributes'
 
-  dbRetry:
+  dbAttributes:
     type: object
     properties:
-      tableName:
+      correlationid:
         type: string
+      dbDetails:
+        type: string
+    required:
+      - correlationid
 
-  kafkaRetry:
+  kafkaAttributes:
     type: object
     properties:
-      topicName:
+      replicationMode:
         type: string
+    required:
+      - replicationMode
+    allOf:
+      - properties:
+          replicationMode:
+            enum:
+              - One
+          replicationModeOne:
+            $ref: '#/definitions/replicationModeOne'
+      - properties:
+          replicationMode:
+            enum:
+              - All
+          replicationModeAll:
+            $ref: '#/definitions/replicationModeAll'
+
+  replicationModeOne:
+    type: object
+    properties:
+      srcTopic:
+        type: string
+      destTopic:
+        type: string
+      partition:
+        type: string
+      offset:
+        type: string
+    required:
+      - srcTopic
+      - destTopic
+      - partition
+      - offset
+
+  replicationModeAll:
+    type: array
+    items:
+      $ref: '#/definitions/replicationModeAllItem'
+
+  replicationModeAllItem:
+    type: object
+    properties:
+      srcTopic:
+        type: string
+      destTopic:
+        type: string
+    required:
+      - srcTopic
+      - destTopic
