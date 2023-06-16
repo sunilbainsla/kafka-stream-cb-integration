@@ -1,0 +1,16 @@
+Job Stream Name: FileTransferStream
+Description: Job stream to handle file transfer process
+
+# File Arrival Job
+Job: FileArrivalJob
+
+# File Transfer Job
+Job: FileTransferJob
+Dependency: FileArrivalJob
+Dependency Type: Finish-to-Start
+
+# Scheduling Details
+Scheduling:
+Start Date/Time: 2023-06-15 09:00 AM
+Frequency: Daily
+Days: Monday to Friday

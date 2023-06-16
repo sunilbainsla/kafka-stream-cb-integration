@@ -1,0 +1,5 @@
+Job Name: FileArrivalJob
+Job Type: Command Job
+Command/Script: /path/to/file_arrival_script.ksh
+Working Directory: /path/to/working_directory
+Machine: arrival_machine

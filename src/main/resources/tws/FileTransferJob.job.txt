@@ -1,0 +1,6 @@
+Job Name: FileTransferJob
+Job Type: Script-based Job
+Command/Script: /path/to/npa_tws_cd_to_hub.sh
+Script Parameters: source_file.txt destination_file.txt
+Working Directory: /path/to/working_directory
+Machine: transfer_machine
