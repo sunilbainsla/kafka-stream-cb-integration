@@ -34,9 +34,9 @@ public class Topic3ConsumerService {
 
   private void businessLogic(Object key, Payment val) {
     System.out.println("before re start: {}"+ val);
-    if(null!=val.getMessage() &&val.getMessage().equalsIgnoreCase("Sunil")){
-    restartController.restart();
-    }
+//    if(null!=val.getMessage() &&val.getMessage().equalsIgnoreCase("Sunil")){
+//    restartController.restart();
+//    }
     System.out.println("topic3Consumer end...");
   }
 }

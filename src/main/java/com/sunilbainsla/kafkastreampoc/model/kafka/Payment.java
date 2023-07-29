@@ -15,4 +15,7 @@ public class Payment {
     String transactionReferenceNumber;
     Account debtorAccount;
     Account creditorAccount;
+    boolean isInternal;
+    PaymentStatus paymentStatus;
+    String description;
 }

@@ -13,3 +13,12 @@ else
     echo "File has not arrived yet"
     exit 1  # Failure
 fi
+
+(cd /cdirect/ndm/bin/; ./direct) << EOJ
+submit
+testjob process snode=${snode}
+    step1
+    copy from (file=${fromfile} pnode)
+         to (dsn=${tofile})
+pend;
+EOJ

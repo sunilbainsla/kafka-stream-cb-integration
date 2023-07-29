@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -10,6 +11,8 @@ import org.apache.kafka.clients.admin.AlterConsumerGroupOffsetsResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.consumer.internals.ConsumerCoordinator;
+import org.apache.kafka.clients.consumer.internals.ConsumerMetadata;
 import org.apache.kafka.common.TopicPartition;
 
 public class KafkaOffsetResetExample {
@@ -26,7 +29,6 @@ public class KafkaOffsetResetExample {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 
         // Pause the consumer to stop fetching records
-        consumer.pause(Collections.emptyList());
 
         // Create the AdminClient
         try (AdminClient adminClient = AdminClient.create(props)) {
@@ -45,10 +47,13 @@ public class KafkaOffsetResetExample {
             // Create the map of topic partitions and offset metadata
             Map<TopicPartition, OffsetAndMetadata> offsetsMap = new HashMap<>();
             offsetsMap.put(topicPartition, offsetAndMetadata);
-
+            consumer.pause(Collections.emptyList());
+            consumer.unsubscribe();
+            stopConsumerGracefully(consumer);
             // Reset the offsets for the specified consumer group
             AlterConsumerGroupOffsetsResult result = adminClient.alterConsumerGroupOffsets(consumerGroup, offsetsMap);
             result.all().get();
+
             consumer.commitSync();
 
             // Resume the consumer to start fetching records again
@@ -57,5 +62,17 @@ public class KafkaOffsetResetExample {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private static void stopConsumerGracefully(KafkaConsumer<String, String> consumer) {
+        AtomicBoolean stopFlag = new AtomicBoolean(false);
+
+        // Register a shutdown hook to capture termination signals
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Set the stop flag when the shutdown hook is triggered
+            stopFlag.set(true);
+            // Interrupt the consumer thread to break out of the polling loop
+           // consumer.wakeup();
+        }));
+
     }
 }

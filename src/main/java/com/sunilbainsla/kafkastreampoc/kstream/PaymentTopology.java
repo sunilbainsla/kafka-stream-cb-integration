@@ -14,7 +14,7 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
    
     public KStream<String, Payment>[] apply(KStream<String, Payment> mainPaymentKStream) {
 
-        KStream<String, Payment>[] messageSunil = mainPaymentKStream.branch(paymentPredicate);
+        KStream<String, Payment>[] messageWithSpecificName = mainPaymentKStream.branch(paymentPredicate);
         KStream<String, Payment> greaterAmountStream = mainPaymentKStream.filter((k, v) -> v.getAmount() > 0);
         KStream<String, Payment> gbpCurrency = mainPaymentKStream.filter((k, v) -> v.getCurrency().equalsIgnoreCase("GBP")).
                 peek((s, payment) -> System.out.println(s + payment.getMessage()));
@@ -22,7 +22,7 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
 
         KStream<String, Payment> transformValues = mainPaymentKStream.transformValues(() -> new PaymentValueTransformer());
 
-        KStream<String, Payment>[] outputStream = new KStream[]{messageSunil[0], greaterAmountStream, gbpCurrency, mapTransform, transformValues};
+        KStream<String, Payment>[] outputStream = new KStream[]{messageWithSpecificName[0], greaterAmountStream, gbpCurrency, mapTransform, transformValues};
 
         return outputStream;
     }

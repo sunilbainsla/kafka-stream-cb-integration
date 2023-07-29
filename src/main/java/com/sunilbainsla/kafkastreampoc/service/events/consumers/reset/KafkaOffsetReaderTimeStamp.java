@@ -1,4 +1,4 @@
-package com.sunilbainsla.kafkastreampoc.service.events.consumers;
+package com.sunilbainsla.kafkastreampoc.service.events.consumers.reset;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.*;
 import java.time.*;

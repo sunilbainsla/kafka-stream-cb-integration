@@ -32,22 +32,24 @@ spring.cloud.stream.bindings:
   paymentProcessor-in-0:
     destination: payment-processor
   paymentProcessor-out-0:
-    destination: payment-processor-message-sunil
+    destination: payment-processor-internal
   paymentProcessor-out-1:
-    destination: payment-processor-greater-amount
+    destination: payment-processor-external
   paymentProcessor-out-2:
-    destination: payment-processor-gbp-currency
+    destination: payment-processor-overseas
   paymentProcessor-out-3:
-    destination: payment-processor-map-transform
+    destination: payment-processor-payment_refunds
   paymentProcessor-out-4:
-    destination: payment-processor-transform-values
+    destination: payment-processor-payment_failed
+  paymentProcessor-out-5:
+    destination: payment-processor-payment_completed
   employeeProcessor-in-0:
     destination: employee-processor
   employeeProcessor-out-0:
     destination: employee-processor-out
 spring.cloud.stream:
   # function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;employeeProcessor;
-  function.definition: topicConsumer;topic3Consumer
+  function.definition: topicConsumer;topic3Consumer;paymentProcessor
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
@@ -59,11 +61,12 @@ spring.cloud.stream:
       topic7Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic7Consumer
       topic8Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic8Consumer
       paymentProcessor-in-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessor
-      paymentProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout
-      paymentProcessor-out-1.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout1
-      paymentProcessor-out-2.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout2
-      paymentProcessor-out-3.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout3
-      paymentProcessor-out-4.consumer.configuration.application.id: ${spring.application.name}-paymentProcessorout4
+      paymentProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-internal
+      paymentProcessor-out-1.consumer.configuration.application.id: ${spring.application.name}-external
+      paymentProcessor-out-2.consumer.configuration.application.id: ${spring.application.name}-overseas
+      paymentProcessor-out-3.consumer.configuration.application.id: ${spring.application.name}-payment_refunds
+      paymentProcessor-out-4.consumer.configuration.application.id: ${spring.application.name}-payment_failed
+      paymentProcessor-out-5.consumer.configuration.application.id: ${spring.application.name}-payment_completed
       employeeProcessor-in-0.consumer.configuration.application.id: ${spring.application.name}-employeeProcessor
       employeeProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-employeeProcessorOut
     binder:

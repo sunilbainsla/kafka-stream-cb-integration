@@ -6,7 +6,9 @@ import com.sunilbainsla.kafkastreampoc.model.kafka.Sensor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
-
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.cloud.stream.function.StreamBridge;
 import java.util.Random;
 import java.util.UUID;
 
@@ -29,38 +31,47 @@ public class StreamBridgeProducersService {
         sensor.setVelocity(random.nextFloat() * 100);
         sensor.setTemperature(random.nextFloat() * 50);
         log.debug("Producer topic1: {}", sensor);
-        streamBridge.send("topic1", sensor);
+        Message<String> message = MessageBuilder.withPayload(sensor.toString())
+                .setHeader("kafka_key", UUID.randomUUID())
+                .build();
+
+        streamBridge.send("topic1", message);
     }
 
     public void topicPublisher(String id, Payment payment) {
 
-        String publisherTopic = "topic" + id;
-        if (Integer.parseInt(id) <= 9) {
-            if (Integer.parseInt(id) == 9) {
-                publisherTopic = "payment-processor";
-            } else {
+       String publisherTopic;
+
+        if (id.equalsIgnoreCase("startPayment")) {
+         publisherTopic = "payment-processor";
+            streamBridge.send(publisherTopic, payment);
+        }
+        else {
+            if (Integer.parseInt(id) <= 9) {
+
                 publisherTopic = "topic" + id;
-            }
-            String tempMsg = payment.getMessage();
-            if (publisherTopic.equalsIgnoreCase("topic4")) {
-                for (int i = 0; i < 2000; i++) {
-                    payment.setMessage(tempMsg + " record no " + String.valueOf(i));
-                    log.info("Publisher msg for the record \n" + payment.getMessage());
+
+                String tempMsg = payment.getMessage();
+                if (publisherTopic.equalsIgnoreCase("topic4")) {
+                    for (int i = 0; i < 2000; i++) {
+                        payment.setMessage(tempMsg + " record no " + String.valueOf(i));
+                        log.info("Publisher msg for the record \n" + payment.getMessage());
+                        streamBridge.send(publisherTopic, payment);
+                    }
+
+                } else {
                     streamBridge.send(publisherTopic, payment);
                 }
-
             } else {
-                streamBridge.send(publisherTopic, payment);
+                Employee employee = new Employee();
+                employee.setDepartment("Engineering");
+                employee.setId(UUID.randomUUID().toString());
+                employee.setName("Sunil");
+                employee.setSalary(20000 + new Random().nextInt());
+                publisherTopic = "employee-processor";
+                log.debug("Producer {}: {}", publisherTopic, employee);
+                streamBridge.send(publisherTopic, employee);
             }
-        } else {
-            Employee employee = new Employee();
-            employee.setDepartment("Engineering");
-            employee.setId(UUID.randomUUID().toString());
-            employee.setName("Sunil");
-            employee.setSalary(20000 + new Random().nextInt());
-            publisherTopic = "employee-processor";
-            log.debug("Producer {}: {}", publisherTopic, employee);
-            streamBridge.send(publisherTopic, employee);
         }
 
     }

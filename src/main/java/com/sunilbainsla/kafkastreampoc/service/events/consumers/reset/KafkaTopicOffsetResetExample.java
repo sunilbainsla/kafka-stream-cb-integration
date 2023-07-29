@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class KafkaTopicOffsetResetExample {
     public static void main(String[] args) {
         // Set the consumer group and topic for offset reset
-        String consumerGroup = "kafka-stream-poc-topic3Consumer-e51a9efc-47bf-4e76-99ba-34cdfc070757-StreamThread-1-consumer-93fa214c-1756-4a86-baa3-69dc6b1a2154";
+        String consumerGroup = "kafka-stream-poc-topic3Consumer";
         String topic = "topic3";
 
         // Configure the Kafka AdminClient properties
