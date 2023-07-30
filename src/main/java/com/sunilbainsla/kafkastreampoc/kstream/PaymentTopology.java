@@ -2,16 +2,25 @@ package com.sunilbainsla.kafkastreampoc.kstream;
 
 import com.sunilbainsla.kafkastreampoc.model.kafka.Payment;
 import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Predicate;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.WindowedSerdes;
+import org.apache.kafka.streams.state.Stores;
 
 import java.util.function.Function;
 
 @Log4j2
 
 public class PaymentTopology implements Function<KStream<String, Payment>, KStream<String, Payment>[]> {
-   
+
+
     public KStream<String, Payment>[] apply(KStream<String, Payment> mainPaymentKStream) {
 
         KStream<String, Payment>[] isInternalPayment = mainPaymentKStream.branch(internalPaymentPredicate);
@@ -23,6 +32,15 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
         KStream<String, Payment> failedPayment = mainPaymentKStream.filter((k, v) -> v.getPaymentStatus().equalsIgnoreCase("FAILED"));
         KStream<String, Payment> completedPayment = mainPaymentKStream.filter((k, v) -> v.getPaymentStatus().equalsIgnoreCase("COMPLETED"));
         completedPayment=completedPayment.transformValues(() -> new PaymentValueTransformer());
+
+
+        KTable<String, String> sortCodeTable = mainPaymentKStream
+                .filter((k, payment) -> payment.getDebtorAccount().getIdentification() != null) // Filter out payments with no sort code
+                .selectKey((k, payment) -> payment.getDebtorAccount().getIdentification()) // Use the sort code as the new key
+                .mapValues(payment -> payment.getDebtorAccount().getIdentification()) // Extract sort code as value (String)
+                .groupByKey(Grouped.with(Serdes.String(),Serdes.String())) // Group by sort code
+                .reduce((aggValue, newValue) -> newValue, Materialized.as("payment-table"));
+       sortCodeTable.toStream().to("payment-table-topic", Produced.with(Serdes.String(), Serdes.String()).withKeySerde(Serdes.String()).withValueSerde(Serdes.String()));
         KStream<String, Payment>[] outputStream = new KStream[]{isInternalPayment[0],  overseasPayment, refundsPayment, failedPayment,completedPayment};
 
         return outputStream;
@@ -38,5 +56,14 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
     }
 
     Predicate<String, Payment> internalPaymentPredicate = (key, isInternal) -> isInternal.isInternal();
+
+    private String getIdentification(Payment payment) {
+        if (payment.getCurrency().equalsIgnoreCase("GBP")) {
+            payment.setMessage(payment.getMessage() + "UK Currency");
+        } else {
+            payment.setMessage(payment.getMessage() + "NoN UK Currency");
+        }
+        return payment.getDebtorAccount().getIdentification();
+    }
 
 }
