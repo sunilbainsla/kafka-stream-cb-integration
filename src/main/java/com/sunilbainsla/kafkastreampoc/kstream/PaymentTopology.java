@@ -11,6 +11,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Predicate;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.ValueJoiner;
 import org.apache.kafka.streams.kstream.WindowedSerdes;
 import org.apache.kafka.streams.state.Stores;
 
@@ -34,16 +35,27 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
         completedPayment=completedPayment.transformValues(() -> new PaymentValueTransformer());
 
 
-        KTable<String, String> sortCodeTable = mainPaymentKStream
-                .filter((k, payment) -> payment.getDebtorAccount().getIdentification() != null) // Filter out payments with no sort code
-                .selectKey((k, payment) -> payment.getDebtorAccount().getIdentification()) // Use the sort code as the new key
-                .mapValues(payment -> payment.getDebtorAccount().getIdentification()) // Extract sort code as value (String)
-                .groupByKey(Grouped.with(Serdes.String(),Serdes.String())) // Group by sort code
-                .reduce((aggValue, newValue) -> newValue, Materialized.as("payment-table"));
-       sortCodeTable.toStream().to("payment-table-topic", Produced.with(Serdes.String(), Serdes.String()).withKeySerde(Serdes.String()).withValueSerde(Serdes.String()));
+        //Generate ktable
+        pushedData(mainPaymentKStream);
+
+        //Read ktable and verify the sortcode
+       // verifySortCode(mainPaymentKStream) ;
+
         KStream<String, Payment>[] outputStream = new KStream[]{isInternalPayment[0],  overseasPayment, refundsPayment, failedPayment,completedPayment};
 
         return outputStream;
+    }
+
+    private void pushedData(KStream<String, Payment> mainPaymentKStream) {
+        KTable<String, String> sortCodeTable = mainPaymentKStream
+         .filter((k, payment) -> payment.getDebtorAccount().getIdentification() != null) // Filter out payments with no sort code
+         .selectKey((k, payment) -> payment.getDebtorAccount().getIdentification()) // Use the sort code as the new key
+         .mapValues(payment -> payment.getDebtorAccount().getIdentification()) // Extract sort code as value (String)
+         .groupByKey(Grouped.with(Serdes.String(),Serdes.String())) // Group by sort code
+         .reduce((aggValue, newValue) -> newValue, Materialized.as("payment-table"));
+         sortCodeTable.toStream().to("payment-table-topic", Produced.with(Serdes.String(), Serdes.String()).withKeySerde(Serdes.String()).withValueSerde(Serdes.String()));
+
+
     }
 
     private Payment transformPayment(Payment payment) {
@@ -66,4 +78,37 @@ public class PaymentTopology implements Function<KStream<String, Payment>, KStre
         return payment.getDebtorAccount().getIdentification();
     }
 
+
+    private void verifySortCode(KStream<String, Payment> mainPaymentKStream) {
+
+        KTable<String, String> sortCodeTable = mainPaymentKStream
+         .filter((k, payment) -> payment.getDebtorAccount().getIdentification() != null) // Filter out payments with no sort code
+         .selectKey((k, payment) -> payment.getDebtorAccount().getIdentification()) // Use the sort code as the new key
+         .mapValues(payment -> payment.getDebtorAccount().getIdentification()) // Extract sort code as value (String)
+         .groupByKey(Grouped.with(Serdes.String(),Serdes.String())) // Group by sort code
+         .reduce((aggValue, newValue) -> newValue, Materialized.as("payment-table"));
+
+    // Define a ValueJoiner to check the sort code from Payment and the sort code from the KTable
+        org.apache.kafka.streams.kstream.ValueJoiner<Payment, String, String> sortCodeChecker = (payment, sortCode) -> {
+            // Do the required checks or operations using the payment and the sort code
+            // For example, you can compare them, transform the payment, etc.
+            if (sortCode != null && sortCode.equals(payment.getDebtorAccount().getIdentification())) {
+                return "Sort code match: " + sortCode;
+            } else {
+                return "Sort code mismatch: " + sortCode;
+            }
+        };
+        KStream<String, String> joinedStream = mainPaymentKStream.leftJoin(
+                sortCodeTable,
+                sortCodeChecker
+        );
+
+        // Print the joined results to the console
+        joinedStream.foreach((identification, result) -> System.out.println(identification + " - " + result));
+
+    }
 }
+
+
+
+
