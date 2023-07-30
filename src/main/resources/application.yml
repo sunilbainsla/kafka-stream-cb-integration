@@ -40,8 +40,6 @@ spring.cloud.stream.bindings:
   paymentProcessor-out-3:
     destination: payment-processor-payment_refunds
   paymentProcessor-out-4:
-    destination: payment-processor-payment_failed
-  paymentProcessor-out-5:
     destination: payment-processor-payment_completed
   employeeProcessor-in-0:
     destination: employee-processor
@@ -65,8 +63,7 @@ spring.cloud.stream:
       paymentProcessor-out-1.consumer.configuration.application.id: ${spring.application.name}-external
       paymentProcessor-out-2.consumer.configuration.application.id: ${spring.application.name}-overseas
       paymentProcessor-out-3.consumer.configuration.application.id: ${spring.application.name}-payment_refunds
-      paymentProcessor-out-4.consumer.configuration.application.id: ${spring.application.name}-payment_failed
-      paymentProcessor-out-5.consumer.configuration.application.id: ${spring.application.name}-payment_completed
+      paymentProcessor-out-4.consumer.configuration.application.id: ${spring.application.name}-payment_completed
       employeeProcessor-in-0.consumer.configuration.application.id: ${spring.application.name}-employeeProcessor
       employeeProcessor-out-0.consumer.configuration.application.id: ${spring.application.name}-employeeProcessorOut
     binder:

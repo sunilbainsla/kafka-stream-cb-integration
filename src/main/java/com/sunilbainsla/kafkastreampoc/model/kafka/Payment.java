@@ -16,6 +16,8 @@ public class Payment {
     Account debtorAccount;
     Account creditorAccount;
     boolean isInternal;
-    PaymentStatus paymentStatus;
+    String paymentStatus;
     String description;
+
+
 }

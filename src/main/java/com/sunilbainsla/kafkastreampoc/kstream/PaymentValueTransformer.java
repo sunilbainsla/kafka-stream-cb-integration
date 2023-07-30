@@ -24,6 +24,8 @@ public class PaymentValueTransformer implements ValueTransformer< Payment,Paymen
         else{
             payment.setMessage(payment.getMessage()+"NoN UK Currency");
         }
+
+        payment.setDescription("Payment has been completed successfully");
         return payment;
     }
 
