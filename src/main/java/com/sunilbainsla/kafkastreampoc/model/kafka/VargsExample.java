@@ -13,8 +13,9 @@ public class VargsExample {
     public static String generateMDCStringWithRefData() {
         return MDC.getCopyOfContextMap().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith("ref_data"))
-                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .map(entry -> entry.getKey().replace("ref_data_", "") + ": " + entry.getValue())
                 .collect(Collectors.joining(", "));
+
     }
 
     public static void main(String[] args) {
