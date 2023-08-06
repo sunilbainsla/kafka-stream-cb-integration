@@ -46,6 +46,10 @@ public class StreamBridgeProducersService {
          publisherTopic = "payment-processor";
             streamBridge.send(publisherTopic, payment);
         }
+        if (id.equalsIgnoreCase("startBulk")) {
+            publisherTopic = "arrival-notification";
+            streamBridge.send(publisherTopic, payment);
+        }
         else {
             if (Integer.parseInt(id) <= 9) {
 

@@ -8,6 +8,9 @@ spring.cloud.stream.bindings:
   topicConsumer-in-0:
     destination: topic1
     group: topic-consumer-group-1
+  bulkConsumer-in-0:
+    destination: arrival-notification
+    group: bulk-consumer-group-1
   topic2Consumer-in-0:
     destination: topic2
     group: topic2-consumer-group-1F
@@ -47,10 +50,11 @@ spring.cloud.stream.bindings:
     destination: employee-processor-out
 spring.cloud.stream:
   # function.definition: topicConsumer;topic2Consumer;topic3Consumer;topic4Consumer;topic5Consumer;topic6Consumer;topic7Consumer;topic8Consumer;paymentProcessor;employeeProcessor;
-  function.definition: topicConsumer;topic3Consumer;paymentProcessor
+  function.definition: topicConsumer;bulkConsumer;
   kafka.streams:
     bindings:
       topicConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topicConsumer
+      bulkConsumer-in-0.consumer.configuration.application.id: ${spring.application.name}-bulkConsumer
       topic2Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic2Consumer
       topic3Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic3Consumer
       topic4Consumer-in-0.consumer.configuration.application.id: ${spring.application.name}-topic4Consumer
@@ -175,3 +179,12 @@ resilience4j.timelimiter:
   instances:
     time-instance:
       baseConfig: default
+topic:
+  name:
+    payment: sort-code-payment
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
