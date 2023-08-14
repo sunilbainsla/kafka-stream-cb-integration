@@ -9,9 +9,12 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +23,9 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
@@ -32,13 +38,31 @@ public class BatchConfiguration {
 
     @Autowired
     private Step chunkStep;
+
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new ResourcelessTransactionManager();
+    }
+
+    @Bean
+    public JobRepository jobRepository(DataSource dataSource, PlatformTransactionManager transactionManager) throws Exception {
+        JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
+        factory.setDataSource(dataSource);
+        factory.setTransactionManager(transactionManager);
+        factory.setIsolationLevelForCreate("ISOLATION_REPEATABLE_READ");
+        factory.setTablePrefix("BATCH_"); // Set a table prefix for batch-related tables
+        return factory.getJobRepository();
+    }
+
     @Bean
     public Step chunkStep(
             ItemReader<Employee> reader,
             ItemProcessor<Employee, Employee> processor,
             ItemWriter<Employee> writer,
             Retry myRetry,
-            CircuitBreaker chunkCircuitBreaker
+            CircuitBreaker chunkCircuitBreaker,
+            MyChunkListener chunkListener
     ) {
         ItemWriter<Employee> retryWriter = new RetryItemWriter<>(writer,myRetry);
         ItemProcessor<Employee, Employee> retryProcessor = new RetryItemProcessor<>(processor, myRetry);
@@ -53,6 +77,7 @@ public class BatchConfiguration {
                 .writer(circuitBreakerWriter)
                 .faultTolerant()
                 .retryLimit(3)
+                .listener(chunkListener)
                 .retry(Exception.class)
                 .skipLimit(10)
                 .skip(Exception.class)
