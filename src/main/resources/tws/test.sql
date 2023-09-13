@@ -93,6 +93,9 @@ public class YourEntity {
 }
 
 
+@Query(value = "SELECT NEW com.example.MyProjectionClass('N', STG.REGION_CODE, STG.BRANCH_NAME, STG.BRANCH_CODE, STG.CREATE_TIME, STG.VERSION) FROM RCBS_BRANCHES_STG_AG4 STG LEFT JOIN RCBS_BRANCHES_AG4 LIVE ON STG.BRANCH_CODE = LIVE.BRANCH_CODE WHERE LIVE.BRANCH_CODE IS NULL UNION SELECT NEW com.example.MyProjectionClass('D', LIVE.REGION_CODE, LIVE.BRANCH_NAME, LIVE.BRANCH_CODE, LIVE.CREATE_TIME, LIVE.VERSION) FROM RCBS_BRANCHES_AG4 LIVE LEFT JOIN RCBS_BRANCHES_STG_AG4 STG ON LIVE.BRANCH_CODE = STG.BRANCH_CODE WHERE STG.BRANCH_CODE IS NULL UNION SELECT NEW com.example.MyProjectionClass('U', STG.REGION_CODE, STG.BRANCH_NAME, STG.BRANCH_CODE, STG.CREATE_TIME, STG.VERSION) FROM RCBS_BRANCHES_STG_AG4 STG JOIN RCBS_BRANCHES_AG4 LIVE ON STG.BRANCH_CODE = LIVE.BRANCH_CODE WHERE STG.BRANCH_NAME <> LIVE.BRANCH_NAME OR STG.REGION_CODE <> LIVE.REGION_CODE", nativeQuery = true)
+List<MyProjectionClass> branchesComparedDataResult();
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -171,6 +174,7 @@ public class YourService {
             entity.setId(resultSet.getLong("id"));
             entity.setUsername(resultSet.getString("username"));
             entity.setEmail(resultSet.getString("email"));
+            entity.setChangeType(resultSet.getString("change_type"))
             // Set other properties as needed
             return entity;
         });
