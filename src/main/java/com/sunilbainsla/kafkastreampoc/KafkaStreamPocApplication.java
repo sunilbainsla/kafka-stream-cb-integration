@@ -14,8 +14,8 @@ public class KafkaStreamPocApplication {
     public static void main(String[] args) {
         SpringApplication.run(KafkaStreamPocApplication.class, args);
     }
-    @Bean
-    public RestartController restartController(ConfigurableApplicationContext context) {
-        return new RestartController(context);
-    }
+//    @Bean
+//    public RestartController restartController(ConfigurableApplicationContext context) {
+//        return new RestartController(context);
+//    }
 }

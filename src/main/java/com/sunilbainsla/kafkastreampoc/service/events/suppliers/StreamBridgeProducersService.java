@@ -64,7 +64,7 @@ public class StreamBridgeProducersService {
                     }
 
                 } else {
-                    streamBridge.send(publisherTopic, payment);
+                    streamBridge.send(publisherTopic, tempMsg);
                 }
             } else {
                 Employee employee = new Employee();

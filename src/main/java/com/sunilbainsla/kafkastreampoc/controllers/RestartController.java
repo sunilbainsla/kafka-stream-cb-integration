@@ -24,7 +24,6 @@ public class RestartController {
 
     @GetMapping("/restart")
     public void restart() {
-        context.close();
-        SpringApplication.run(KafkaStreamPocApplication.class);
+
     }
 }
