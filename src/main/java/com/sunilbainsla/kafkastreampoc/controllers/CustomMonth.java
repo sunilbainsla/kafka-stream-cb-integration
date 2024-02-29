@@ -38,5 +38,14 @@ public class CustomMonth {
         } catch (ParseException e) {
             return false; // Parsing failed, so the date is not valid
         }
+//        SELECT *
+//                FROM table1
+//        INNER JOIN table3 ON table1.branch_code = table3.branch_code
+//        WHERE table1.branch_code = 'your_branch_code_value'
+//        UNION ALL
+//        SELECT *
+//                FROM table2
+//        INNER JOIN table3 ON table2.branch_code = table3.branch_code
+//        WHERE table2.branch_code = 'your_branch_code_value';
     }
 }
